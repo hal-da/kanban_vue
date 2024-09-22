@@ -8,8 +8,8 @@ console.log('homeview')
 </script>
 
 <template>
-    <main>
-        <h1>Kanbantastisch</h1>
-      <PublicBoard v-for="(board) in publicBoards" :board="board" />
+    <main class="mx-2">
+        <h1 class="">Kanbantastisch</h1>
+        <PublicBoard v-for="(board) in publicBoards" :board="board" />
     </main>
 </template>

@@ -1,36 +1,45 @@
 <script setup>
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import Auth from "@/components/auth/Auth.vue";
+import {useRoute} from "vue-router";
+import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
+const privateBoardStore = usePrivateBoardStore()
 
-
+const route = useRoute();
 const items = ref([
-  {label: 'Home', icon: 'pi pi-home', route: '/'},
-  {label: 'About', icon: 'pi pi-star', route: '/about'}
+    {label: 'Home', icon: 'pi pi-home', route: '/'},
+    {label: 'About', icon: 'pi pi-star', route: '/about'}
 ])
+
+watch(route,(newRoute) => {
+    if(!newRoute.params.id){
+        privateBoardStore.resetBoard()
+    }
+})
 
 </script>
 
 <template>
-<div class="card">
-  <Menubar :model="items" class="py-0">
-    <template #item="{ item, props, hasSubmenu }">
-      <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-        <a v-ripple :href="href" v-bind="props.action" @click="navigate">
-          <span :class="item.icon" />
-          <span class="ml-2">{{ item.label }}</span>
-        </a>
-      </router-link>
-<!--      <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">-->
-<!--        <span :class="item.icon" />-->
-<!--        <span class="ml-2">{{ item.label }}</span>-->
-<!--        <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down ml-2" />-->
-<!--      </a>-->
-    </template>
-    <template #end>
-      <Auth />
-    </template>
-  </Menubar>
-</div>
+    <div class="card">
+        <Menubar :model="items" class="py-0">
+            <template #item="{ item, props, hasSubmenu }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="item.icon"/>
+                        <span class="ml-2">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <!--      <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">-->
+                <!--        <span :class="item.icon" />-->
+                <!--        <span class="ml-2">{{ item.label }}</span>-->
+                <!--        <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down ml-2" />-->
+                <!--      </a>-->
+            </template>
+            <template #end>
+                <Auth/>
+            </template>
+        </Menubar>
+    </div>
 </template>
 
 <style scoped>
