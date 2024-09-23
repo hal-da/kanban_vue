@@ -1,6 +1,6 @@
 import {computed, onMounted, ref} from "vue";
 import {defineStore} from "pinia";
-import {localStorageKeys, routes as constants, url} from "@/components/utilities/constants.js";
+import {localStorageKeys, routes, url} from "@/components/utilities/constants.js";
 
 export const useAuthStore = defineStore('auth', () => {
     const authToken = ref('')
@@ -9,8 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
     const isLoggedIn = computed(() => authToken.value !== '')
 
     async function fetchUser() {
-        console.log(`${url}${constants.ROUTE_WHO_AM_I}`)
-        const userResponse = await fetch(`${url}${constants.ROUTE_WHO_AM_I}`, {
+        const userResponse = await fetch(`${url}${routes.ROUTE_WHO_AM_I}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${authToken.value}`,
@@ -25,7 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
                 email,
                 password
             }
-            const loginResponse = await fetch(`${url}${constants.ROUTE_LOGIN}`, {
+            const loginResponse = await fetch(`${url}${routes.ROUTE_LOGIN}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
     onMounted(async () => {
         const token = localStorage.getItem('kanbantastischAuthToken')
         if (!!token) {
-            const validateResponse = await fetch(`${url}${constants.ROUTE_TOKEN_VALIDATOR}`, {
+            const validateResponse = await fetch(`${url}${routes.ROUTE_TOKEN_VALIDATOR}`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -84,19 +83,22 @@ export const useAuthStore = defineStore('auth', () => {
                 userName,
 
             }
-            const registerResponse = await fetch(`${url}${constants.ROUTE_REGISTER}`, {
+            const registerResponse = await fetch(`${url}${routes.ROUTE_REGISTER}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(registerData)
             })
-            if (registerResponse.status === 200) {
-                return await login(email, password)
-            }
             console.log(registerResponse)
-            const body = await registerResponse.json()
-            console.log(body)
+            if (registerResponse.ok) {
+                await login(email, password1)
+
+                return Promise.resolve({success: true})
+            }
+            const reason = await registerResponse.json()
+            return Promise.resolve({success: false, error:reason.error})
+
         } catch (e) {
             return Promise.resolve({success: false, message: e.message})
         }

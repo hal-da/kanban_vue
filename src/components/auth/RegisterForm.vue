@@ -1,0 +1,96 @@
+<script setup>
+
+import {computed, reactive} from "vue";
+import {useAuthStore} from "@/stores/authorization.js";
+import {usePublicUserStore} from "@/stores/publicUserStore.js";
+
+const publicUserStore = usePublicUserStore()
+const authStore = useAuthStore()
+
+const state = reactive({
+    userName: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    loading: false,
+    errorMessage: '',
+    userNameError: ''
+})
+
+
+const registerClickHandler = async () => {
+    state.loading = true
+    const res = await authStore.register(state.userName, state.email, state.password, state.passwordConfirm)
+    console.log(res)
+    if (!res.success) {
+        state.errorMessage = res.error
+    }
+    state.loading = false
+}
+
+const userNameNotUnique = computed(() => {
+    const isNotUnique = publicUserStore.publicUsers.some(user => user.userName === state.userName)
+    if(isNotUnique){
+        state.userNameError = 'Username is already taken'
+    } else {
+        state.userNameError = ''
+    }
+    return isNotUnique
+})
+
+const registerBtnDisabled = computed(() => {
+    return state.userName.length < 1
+        || state.email.length < 1
+        || state.password.length < 1
+        || state.passwordConfirm.length < 1
+        || state.password !== state.passwordConfirm
+        || !state.email.includes('@')
+        || userNameNotUnique.value
+
+})
+
+// TODO: username must be unique!
+
+</script>
+
+<template>
+    <div class="p-fluid">
+
+        <FloatLabel class="mt-3">
+            <InputText v-model="state.userName" id="userName" minlength="1" maxlength="80"/>
+            <label for="userName" style="background-color: #262626; color: white">User Name</label>
+            <p v-if="state.userNameError" class="text-red-600">{{ state.userNameError }}</p>
+
+        </FloatLabel>
+
+        <FloatLabel class="mt-3">
+            <InputText type="email" v-model="state.email" id="email" minlength="1" maxlength="80"/>
+            <label for="email" style="background-color: #262626; color: white">Email</label>
+        </FloatLabel>
+
+        <FloatLabel class="mt-3">
+            <InputText type="password" v-model="state.password" id="password" minlength="1" maxlength="80"/>
+            <label for="password" style="background-color: #262626; color: white">Password</label>
+        </FloatLabel>
+
+        <FloatLabel class="mt-3">
+            <InputText type="password" v-model="state.passwordConfirm" id="passwordConfirm" minlength="1"
+                       maxlength="80"/>
+            <label for="passwordConfirm" style="background-color: #262626; color: white">Confirm Password</label>
+        </FloatLabel>
+
+        <div class="flex flex-wrap align-items-center justify-content-end">
+            <Button @click="registerClickHandler"
+                    :disabled="registerBtnDisabled"
+                    class="mt-4 ml-auto px-3 text-center"
+                    icon="pi pi-check"
+                    :loading="state.loading" label="register"/>
+            <p v-if="state.errorMessage" class="text-red-600">{{ state.errorMessage }}</p>
+        </div>
+
+    </div>
+</template>
+
+<style scoped>
+
+</style>

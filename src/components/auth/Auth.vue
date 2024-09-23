@@ -53,14 +53,13 @@ const createBoardCLickHandler = async () => {
         })
     })
     // TODO: spinner, toast, error handling
-     if(res.ok){
-         const newBoard = await res.json()
-         await publicBoardsStore.fetchPublicBoards()
-         state.displayCreateBoardModal = false
-         await router.push({name: 'board', params: {id: newBoard.id}})
-     }
+    if (res.ok) {
+        const newBoard = await res.json()
+        await publicBoardsStore.fetchPublicBoards()
+        state.displayCreateBoardModal = false
+        await router.push({name: 'board', params: {id: newBoard.id}})
+    }
 }
-
 
 
 const logoutClickHandler = async () => {
@@ -69,41 +68,60 @@ const logoutClickHandler = async () => {
 }
 
 const openEditBoardClickHandler = () => {
-    console.log(privateBoard)
     privateBoardCopy.value = {...privateBoard.value}
     state.displayEditBoardModal = !state.displayEditBoardModal
 }
 
+const cancelEditBoardClickHandler = (e) => {
+    state.displayEditBoardModal = false
+    if(e !== 'created') privateBoardStore.refreshBoard()
+}
+
+const cancelCreateBoardClickHandler = () => {
+    state.displayCreateBoardModal = false
+}
+
+const closeCreateBord = () => {
+    state.displayCreateBoardModal = false
+}
+
+const createEventHandler = (e) => {
+    console.log('create event handler', e)
+    // state.displayCreateBoardModal = false
+    // state.displayEditBoardModal = false
+
+}
 
 
 </script>
 
 <template>
     <div v-if="authStore.isLoggedIn">
-        <Button v-if="privateBoard?.userIsAdmin" text class="pr-0" @click="openEditBoardClickHandler">edit board</Button>
-        <Button v-if="!Object.values(privateBoard).length" text class="pr-0" @click="state.displayCreateBoardModal = !state.displayCreateBoardModal">create board</Button>
+        <Button v-if="privateBoard?.userIsAdmin" text class="pr-0" @click="openEditBoardClickHandler">edit board
+        </Button>
+        <Button v-if="!Object.values(privateBoard).length" text class="pr-0"
+                @click="state.displayCreateBoardModal = !state.displayCreateBoardModal">create board
+        </Button>
         <Button text disabled class="pr-0">hello, {{ authStore.user.userName }}</Button>
         <Button @click="logoutClickHandler" text>logout</Button>
-        <Dialog v-model:visible="state.displayCreateBoardModal" modal header="Create Board" :style="{ width: '50vw' }"
+        <Dialog v-model:visible="state.displayCreateBoardModal"
+                modal
+                :style="{ width: '50vw' }"
+                @close="cancelEditBoardClickHandler"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
-            <div class="p-fluid">
-                <FloatLabel class="mt-3">
-                    <InputText v-model="state.newBoardTitle" id="boardTitle" minlength="1" maxlength="80"/>
-                    <label for="boardTitle" style="background-color: #262626; color: white">Board Title</label>
-                    <div class="help text-right">{{state.newBoardTitle.length}}/80</div>
-                </FloatLabel>
-                <div class="flex flex-wrap align-items-center justify-content-end">
-                    <Button @click="createBoardCLickHandler"
-                            :disabled="!state.newBoardTitle"
-                            class="mt-4 ml-auto px-3 text-center"
-                            icon="pi pi-check"
-                            :loading="state.loading" label="create"/>
-                </div>
-            </div>
+            <template #container="{  }">
+                <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
+            </template>
         </Dialog>
-        <Dialog v-model:visible="state.displayEditBoardModal" modal header="Edit Board" :style="{ width: '50vw' }"
-                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
-                <EditBoard :original_board="privateBoard" @cancel="state.displayEditBoardModal =! state.displayEditBoardModal" />
+        <Dialog v-model:visible="state.displayEditBoardModal"
+                modal
+                :style="{ width: '50vw' }"
+                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+                @close="cancelEditBoardClickHandler"
+        >
+            <template #container="{  }">
+                <EditBoard :original_board="privateBoard" @cancel="cancelEditBoardClickHandler" @create="createEventHandler" :title="'Edit Board'"/>
+            </template>
         </Dialog>
     </div>
     <div v-else>
@@ -136,7 +154,7 @@ const openEditBoardClickHandler = () => {
 </template>
 
 <style scoped>
-.help{
+.help {
     font-size: 12px;
     color: gray;
 }
