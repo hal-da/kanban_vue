@@ -1,14 +1,27 @@
 <script setup>
-import {onMounted,  ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
+import {useAuthStore} from "@/stores/authorization.js";
 import {storeToRefs} from "pinia";
+import {routes, url} from "@/components/utilities/constants.js";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
+
+const privateBoardStore = usePrivateBoardStore()
+const authStore = useAuthStore()
 
 const props = defineProps({
     id: String
 })
 
-const privateAuthStore = usePrivateBoardStore()
-const {privateBoard} = storeToRefs(privateAuthStore)
+const state  = reactive({
+    newTaskDialog: false,
+    newTaskTitle: '',
+    newTaskDescription: '',
+    newTaskColumnId: ''
+})
+const {privateBoard} = storeToRefs(privateBoardStore)
 console.log(privateBoard)
 
 onMounted(async () => {
@@ -19,14 +32,105 @@ onMounted(async () => {
     }
 })
 
+const newTaskColumnOptions = computed(() => {
+    return privateBoard.value.columns.map(column => {
+        return {
+            label: column.title,
+            value: column.id
+        }
+    })
+})
+
+const saveBtnDisabled = computed(() => {
+    return state.newTaskTitle.length < 1
+        // || state.newTaskDescription.length < 1
+        || state.newTaskColumnId.length < 1
+})
+
+const showDialogNewTaskClickHandler = () => {
+    state.newTaskColumnId = privateBoard.value.columns[0].id
+    state.newTaskDialog = true
+}
+
+const saveNewTaskClickHandler = async () => {
+    const newTaskUrl = url + routes.ROUTE_TASKS(props.id, state.newTaskColumnId)
+    console.log(newTaskUrl)
+    const httpMethod = 'POST'
+    const body = {
+        title: state.newTaskTitle,
+        description: state.newTaskDescription,
+        columnId: state.newTaskColumnId
+    }
+
+    const res = await fetch(newTaskUrl, {
+        method: httpMethod,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authStore.authToken}`
+        },
+        body: JSON.stringify(body)
+    })
+    if(res.ok){
+        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Task created successfully!' , life: 3000 });
+        await privateBoardStore.refreshBoard()
+        newTaskDialogClosed()
+    } else {
+        const body = await res.json()
+        toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: body.error , life: 3000 });
+    }
+}
+
+const newTaskDialogClosed = () => {
+    state.newTaskDescription = ''
+    state.newTaskTitle = ''
+    state.newTaskDialog = false
+}
+
 
 </script>
 
 <template>
-    <h2 class="text-center">{{privateBoard.title}}</h2>
+    <div class="flex justify-content-between">
+        <Button text  @click="showDialogNewTaskClickHandler">New Task</Button>
+        <h2 class="text-center">{{privateBoard.title}}</h2>
+        <Button text  @click="">Edit Board</Button>
+    </div>
+
     <div class="boardBody flex">
         <Column v-for="column in privateBoard.columns" :column="column" :key="column.id"/>
     </div>
+    <Dialog v-model:visible="state.newTaskDialog"
+            modal
+            @hide="newTaskDialogClosed"
+            :style="{ width: '50vw' }"
+            :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+            header = "New Task"
+    >
+        <!--            :show-header="false"-->
+        <div class="p-fluid">
+            <div class="p-field mb-3" >
+                <label for="title">Title</label>
+                <InputText id="title" v-model="state.newTaskTitle"/>
+            </div>
+            <div class="p-field mb-3">
+                <label for="description">Description</label>
+                <Textarea id="description" v-model="state.newTaskDescription" rows="5" cols="30"/>
+            </div>
+            <div class="p-field mb-3">
+                <label for="columnSelect">Create in column</label>
+                <Dropdown v-model="state.newTaskColumnId" :options="newTaskColumnOptions" optionLabel="label" option-value="value" class="w-full md:w-56" id="columnSelect" />
+
+            </div>
+            <div class="flex justify-content-end">
+                <Button label="Cancel" @click="newTaskDialogClosed"/>
+                <Button label="Save" :disabled="saveBtnDisabled" class="ml-2" @click="saveNewTaskClickHandler"/>
+            </div>
+        </div>
+    </Dialog>
+
+    <pre>
+        {{privateBoard}}
+    </pre>
 </template>
 
 <style scoped>

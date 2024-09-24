@@ -1,6 +1,7 @@
 <script setup>
 import { usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {storeToRefs} from "pinia";
+import Task from "@/components/tasks/Task.vue";
 const privateBoardStore = usePrivateBoardStore()
 const {privateBoard} = storeToRefs(privateBoardStore)
 const props = defineProps(['column'])
@@ -11,11 +12,12 @@ const props = defineProps(['column'])
 <template>
     <div class="column m-1">
         <div class="flex">
-            <h3 class="px-2">{{props.column.title}}</h3>
+            <h3 class="px-2">{{props.column.title}} add WIP Limit - edit columns title und wip limit if admin</h3>
             <Button v-if="privateBoard?.userIsAdmin"  text class="ml-auto my-auto"><i class="pi pi-cog "/></Button>
         </div>
         <Divider class="mt-0"/>
-        <pre>{{props.column}}</pre>
+        <Task v-for="task in props.column.tasks" :task="task" :key="task.id"/>
+<!--        <pre>{{props.column}}</pre>-->
     </div>
 </template>
 

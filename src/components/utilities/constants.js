@@ -7,6 +7,7 @@ export const routes = {
     ROUTE_USERS:'users',
     ROUTE_WHO_AM_I:'whoami',
     ROUTE_TOKEN_VALIDATOR:'tokenValidator',
+    ROUTE_TASKS:(boardId, columnId) => `boards/${boardId}/columns/${columnId}/tasks`,
 }
 
 export const localStorageKeys = {

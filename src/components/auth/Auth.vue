@@ -88,11 +88,8 @@ const clickOpenLoginDialogHandler = () => {
 
 <template>
     <div v-if="authStore.isLoggedIn">
-        <Button v-if="privateBoard?.userIsAdmin" text class="pr-0" @click="openEditBoardClickHandler">edit board
-        </Button>
-        <Button v-if="!Object.values(privateBoard).length" text class="pr-0"
-                @click="state.displayCreateBoardModal = !state.displayCreateBoardModal">create board
-        </Button>
+        <Button v-if="privateBoard?.userIsAdmin" text class="pr-0" @click="openEditBoardClickHandler">edit board</Button>
+        <Button v-if="!Object.values(privateBoard).length" text class="pr-0" @click="state.displayCreateBoardModal = true">create board</Button>
         <Button text disabled class="pr-0">hello, {{ authStore.user.userName }}</Button>
         <Button @click="logoutClickHandler" text>logout</Button>
         <Dialog v-model:visible="state.displayCreateBoardModal"
@@ -132,7 +129,7 @@ const clickOpenLoginDialogHandler = () => {
                 <div class="flex flex-wrap align-items-center justify-content-end">
                   <Button @click="loginClickHandler"
                           :disabled="state.email.length < 1 || state.password.length < 1 || state.loading || state.loginError || !state.email.includes('@')"
-                            class="mt-4 ml-auto px-3 text-center" #
+                            class="mt-4 ml-auto px-3 text-center"
                             icon="pi pi-check"
                   :loading="state.loading" label="login"/>
                   <p v-if="state.loginError" class="mb-0 text-red-600">{{state.loginError}}</p>

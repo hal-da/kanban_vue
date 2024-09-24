@@ -7,9 +7,11 @@ import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {usePublicBoardsStore} from "@/stores/publicBoards.js";
 import UserList from "@/components/boards/UserList.vue";
 import router from "@/router/index.js";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const publicBoardsStore = usePublicBoardsStore()
-const privateBoardStore = usePrivateBoardStore()
 const authStore = useAuthStore();
 const emit = defineEmits(['cancel', 'close', 'create'])
 

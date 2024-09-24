@@ -3,7 +3,9 @@
 import {computed, reactive} from "vue";
 import {useAuthStore} from "@/stores/authorization.js";
 import {usePublicUserStore} from "@/stores/publicUserStore.js";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const publicUserStore = usePublicUserStore()
 const authStore = useAuthStore()
 
