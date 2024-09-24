@@ -38,6 +38,9 @@ export const useAuthStore = defineStore('auth', () => {
                 user.value = await fetchUser()
                 return Promise.resolve({success: true, user: {...user.value}})
             }
+            const reason = await loginResponse.json()
+            return Promise.resolve({success: false, message: reason.error})
+
         } catch (e) {
             return Promise.resolve({success: false, message: e.message})
         }

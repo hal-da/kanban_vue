@@ -29,6 +29,7 @@ const state = reactive({
     loading: false,
     newBoardTitle: '',
     originalBoardToCompareWithChangedBoard: {},
+    loginError: ''
 
 })
 
@@ -38,29 +39,11 @@ const loginClickHandler = async () => {
     if (res.success) {
         state.displayLoginDialog = false
     }
+    else {
+        state.loginError = res.message
+    }
     state.loading = false
 }
-
-const createBoardCLickHandler = async () => {
-    const res = await fetch(url + routes.ROUTE_BOARDS, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authStore.authToken}`
-        },
-        body: JSON.stringify({
-            title: state.newBoardTitle
-        })
-    })
-    // TODO: spinner, toast, error handling
-    if (res.ok) {
-        const newBoard = await res.json()
-        await publicBoardsStore.fetchPublicBoards()
-        state.displayCreateBoardModal = false
-        await router.push({name: 'board', params: {id: newBoard.id}})
-    }
-}
-
 
 const logoutClickHandler = async () => {
     await authStore.logout()
@@ -92,6 +75,10 @@ const createEventHandler = (e) => {
 
 }
 
+const clickLoginHandler = () => {
+  state.loginError = ''
+  state.displayLoginDialog = true
+}
 
 </script>
 
@@ -126,23 +113,25 @@ const createEventHandler = (e) => {
     </div>
     <div v-else>
         <Button @click="state.displayRegisterDialog = !state.displayRegisterDialog" text>Register</Button>
-        <Button @click="state.displayLoginDialog = !state.displayLoginDialog" text>Login</Button>
+        <Button @click="clickLoginHandler" text>Login</Button>
         <Dialog v-model:visible="state.displayLoginDialog" modal header="Login" :style="{ width: '50vw' }"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <div class="p-fluid">
                 <FloatLabel class="mt-3">
-                    <InputText id="email" v-model="state.email"/>
+                    <InputText id="email" v-model="state.email" @change="state.loginError = ''" />
                     <label for="email" style="background-color: #262626; color: white">Email</label>
                 </FloatLabel>
                 <FloatLabel class="mt-4">
-                    <Password id="password" v-model="state.password"/>
+                    <Password id="password" v-model="state.password" @change="state.loginError = ''"  :feedback="false" />
                     <label for="password" style="background-color: #262626; color: white">Password</label>
                 </FloatLabel>
                 <div class="flex flex-wrap align-items-center justify-content-end">
-                    <Button @click="loginClickHandler"
+                  <Button @click="loginClickHandler"
+                          :disabled="state.email.length < 1 || state.password.length < 1 || state.loading || state.loginError || !state.email.includes('@')"
                             class="mt-4 ml-auto px-3 text-center" #
                             icon="pi pi-check"
-                            :loading="state.loading" label="login"/>
+                  :loading="state.loading" label="login"/>
+                  <p v-if="state.loginError" class="mb-0 text-red-600">{{state.loginError}}</p>
                 </div>
             </div>
         </Dialog>
