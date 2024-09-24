@@ -21,9 +21,15 @@ const state = reactive({
 const registerClickHandler = async () => {
     state.loading = true
     const res = await authStore.register(state.userName, state.email, state.password, state.passwordConfirm)
-    console.log(res)
     if (!res.success) {
         state.errorMessage = res.error
+        toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: state.errorMessage , life: 3000 });
+    } else {
+        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'You have successfully registered!' , life: 3000 });
+        state.userName = ''
+        state.email = ''
+        state.password = ''
+        state.passwordConfirm = ''
     }
     state.loading = false
 }
@@ -46,10 +52,7 @@ const registerBtnDisabled = computed(() => {
         || state.password !== state.passwordConfirm
         || !state.email.includes('@')
         || userNameNotUnique.value
-
 })
-
-// TODO: username must be unique!
 
 </script>
 

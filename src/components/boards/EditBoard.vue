@@ -70,14 +70,17 @@ const editBoardCLickHandler = async () => {
     })
 
     if (res.ok && method === 'PUT') {
+       toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Board was successfully updated' , life: 3000 });
         emit('cancel')
     } else if (res.ok) {
         const newBoard = await res.json()
         await publicBoardsStore.fetchPublicBoards()
+        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Board was successfully created' , life: 3000 });
         await router.push({name: 'board', params: {id: newBoard.id}})
-        emit('close')
-    }else console.error('error', res)
-    // todo: error handling, toasts
+    }else {
+        const errorMessage = await res.json()
+        toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: errorMessage.error , life: 3000 });
+    }
 }
 
 const closeClickHandler = () => {

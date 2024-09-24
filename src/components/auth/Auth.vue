@@ -9,7 +9,9 @@ import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {storeToRefs} from "pinia";
 import EditBoard from "@/components/boards/EditBoard.vue";
 import RegisterForm from "@/components/auth/RegisterForm.vue";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const privateBoardStore = usePrivateBoardStore()
 const {privateBoard} = storeToRefs(privateBoardStore)
 
@@ -38,6 +40,7 @@ const loginClickHandler = async () => {
     const res = await authStore.login(state.email, state.password)
     if (res.success) {
         state.displayLoginDialog = false
+        toast.add({ severity: 'success', summary: 'Welcome',group: 'bl', detail: `Welcome back, ${authStore.user.userName}` , life: 3000 });
     }
     else {
         state.loginError = res.message
@@ -46,7 +49,8 @@ const loginClickHandler = async () => {
 }
 
 const logoutClickHandler = async () => {
-    await authStore.logout()
+  toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
+  await authStore.logout()
     await router.push({name: 'home'})
 }
 
@@ -75,7 +79,7 @@ const createEventHandler = (e) => {
 
 }
 
-const clickLoginHandler = () => {
+const clickOpenLoginDialogHandler = () => {
   state.loginError = ''
   state.displayLoginDialog = true
 }
@@ -113,7 +117,7 @@ const clickLoginHandler = () => {
     </div>
     <div v-else>
         <Button @click="state.displayRegisterDialog = !state.displayRegisterDialog" text>Register</Button>
-        <Button @click="clickLoginHandler" text>Login</Button>
+        <Button @click="clickOpenLoginDialogHandler" text>Login</Button>
         <Dialog v-model:visible="state.displayLoginDialog" modal header="Login" :style="{ width: '50vw' }"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <div class="p-fluid">

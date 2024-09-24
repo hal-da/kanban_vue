@@ -1,13 +1,19 @@
 <script setup>
-import {useToastStore} from "@/stores/toast.js";
-const toastStore = useToastStore();
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
+
+const clickHandler = () => {
+  toast.add({severity: 'info', summary: 'About', detail: 'This is an about page'})
+}
 
 
 </script>
 <template>
   <div class="about">
     <h1>This is an about page</h1>
-    <Button @click="toastStore.showToast({severity: 'info', summary: 'About', detail: 'This is an about page'})" label="Show Toast"/>
+    <Button @click="clickHandler" label="Show Toast"/>
+
   </div>
 </template>
 
