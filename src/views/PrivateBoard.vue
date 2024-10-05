@@ -1,10 +1,12 @@
 <script setup>
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {useAuthStore} from "@/stores/authorization.js";
 import {storeToRefs} from "pinia";
 import {routes, url} from "@/components/utilities/constants.js";
 import { useToast } from 'primevue/usetoast';
+import EditBoard from "@/components/boards/EditBoard.vue";
+import ColumnComponent from "@/components/columns/ColumnComponent.vue";
 
 const toast = useToast();
 
@@ -19,7 +21,8 @@ const state  = reactive({
     newTaskDialog: false,
     newTaskTitle: '',
     newTaskDescription: '',
-    newTaskColumnId: ''
+    newTaskColumnId: '',
+    displayEditBoardModal: false
 })
 const {privateBoard} = storeToRefs(privateBoardStore)
 console.log(privateBoard)
@@ -55,6 +58,7 @@ const showDialogNewTaskClickHandler = () => {
 const saveNewTaskClickHandler = async () => {
     const newTaskUrl = url + routes.ROUTE_TASKS(props.id, state.newTaskColumnId)
     console.log(newTaskUrl)
+    console.log(' POST NEW TASK ')
     const httpMethod = 'POST'
     const body = {
         title: state.newTaskTitle,
@@ -86,6 +90,25 @@ const newTaskDialogClosed = () => {
     state.newTaskDialog = false
 }
 
+const openEditBoardDialogClickHandler = () => {
+    state.displayEditBoardModal = true
+}
+
+const cancelEditBoardClickHandler = () => {
+    state.displayEditBoardModal = false
+    privateBoardStore.refreshBoard()
+}
+
+const screenSize = computed(() => {
+    console.log('computed ',window.innerWidth)
+    return window.innerWidth
+})
+console.log(screenSize.value)
+
+
+window.addEventListener("resize", (event) => {
+    console.log('resize ',event)
+});
 
 </script>
 
@@ -93,12 +116,22 @@ const newTaskDialogClosed = () => {
     <div class="flex justify-content-between">
         <Button text  @click="showDialogNewTaskClickHandler">New Task</Button>
         <h2 class="text-center">{{privateBoard.title}}</h2>
-        <Button text  @click="">Edit Board</Button>
+        <Button text  @click="openEditBoardDialogClickHandler">Edit Board</Button>
     </div>
 
-    <div class="boardBody flex">
-        <Column v-for="column in privateBoard.columns" :column="column" :key="column.id"/>
+    <div class="boardBody flex p-1 gap-1">
+        <ColumnComponent v-for="column in privateBoard.columns" :column="column" :key="column.id" class="column-component"/>
     </div>
+    <Dialog v-model:visible="state.displayEditBoardModal"
+            modal
+            :style="{ width: '50vw' }"
+            :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+            @close="cancelEditBoardClickHandler"
+    >
+        <template #container="{  }">
+            <EditBoard :original_board="privateBoard" @cancel="cancelEditBoardClickHandler" :title="'Edit Board'"/>
+        </template>
+    </Dialog>
     <Dialog v-model:visible="state.newTaskDialog"
             modal
             @hide="newTaskDialogClosed"
@@ -106,7 +139,6 @@ const newTaskDialogClosed = () => {
             :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
             header = "New Task"
     >
-        <!--            :show-header="false"-->
         <div class="p-fluid">
             <div class="p-field mb-3" >
                 <label for="title">Title</label>
@@ -116,11 +148,10 @@ const newTaskDialogClosed = () => {
                 <label for="description">Description</label>
                 <Textarea id="description" v-model="state.newTaskDescription" rows="5" cols="30"/>
             </div>
-            <div class="p-field mb-3">
-                <label for="columnSelect">Create in column</label>
-                <Dropdown v-model="state.newTaskColumnId" :options="newTaskColumnOptions" optionLabel="label" option-value="value" class="w-full md:w-56" id="columnSelect" />
-
-            </div>
+                <div class="p-field mb-3">
+                    <label for="columnSelect">Create in column</label>
+                    <Dropdown v-model="state.newTaskColumnId" :options="newTaskColumnOptions" optionLabel="label" option-value="value" class="w-full md:w-56" id="columnSelect" />
+                </div>
             <div class="flex justify-content-end">
                 <Button label="Cancel" @click="newTaskDialogClosed"/>
                 <Button label="Save" :disabled="saveBtnDisabled" class="ml-2" @click="saveNewTaskClickHandler"/>
@@ -128,9 +159,9 @@ const newTaskDialogClosed = () => {
         </div>
     </Dialog>
 
-    <pre>
-        {{privateBoard}}
-    </pre>
+<!--    <pre>-->
+<!--        {{// privateBoard}}-->
+<!--    </pre>-->
 </template>
 
 <style scoped>
@@ -140,5 +171,9 @@ const newTaskDialogClosed = () => {
     width: 100%;
     height: calc(100vh - 150px);
     overflow: auto;
+}
+
+.column-component {
+    min-width: 300px;
 }
 </style>

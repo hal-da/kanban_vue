@@ -42,7 +42,6 @@ if (mode === 'create') {
     original_board.admins = [authStore.user]
 }
 
-console.log(original_board)
 const state = reactive({
     loading: false,
     privateBoardCopy: {...original_board}
@@ -78,11 +77,15 @@ const editBoardCLickHandler = async () => {
         const newBoard = await res.json()
         await publicBoardsStore.fetchPublicBoards()
         toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Board was successfully created' , life: 3000 });
+        emit('cancel')
         await router.push({name: 'board', params: {id: newBoard.id}})
+
     }else {
         const errorMessage = await res.json()
         toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: errorMessage.error , life: 3000 });
     }
+
+    await usePrivateBoardStore().refreshBoard()
 }
 
 const closeClickHandler = () => {
