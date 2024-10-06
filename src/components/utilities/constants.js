@@ -8,6 +8,8 @@ export const routes = {
     ROUTE_WHO_AM_I:'whoami',
     ROUTE_TOKEN_VALIDATOR:'tokenValidator',
     ROUTE_TASKS:(boardId, columnId) => `boards/${boardId}/columns/${columnId}/tasks`,
+    ROUTE_COLUMNS:(boardId) => `boards/${boardId}/columns`,
+    ROUTE_COLUMN:(boardId, columnId) => `boards/${boardId}/columns/${columnId}`,
 }
 
 export const localStorageKeys = {
@@ -16,3 +18,5 @@ export const localStorageKeys = {
     LS_USER_EMAIL:'ls_user_email',
     LS_USER_ID:'ls_user_id',
 }
+
+export const NEW_BOARD_COLUMN_NAMES = ['BACKLOG','TODO', 'IN_PROGRESS', 'DONE']
