@@ -6,10 +6,12 @@ export const usePublicBoardsStore = defineStore('publicBoards', () => {
     let publicBoards = ref([])
     const fetchPublicBoards = async () => {
         try {
-            const response = await fetch(url + constants.ROUTE_BOARDS )
+            const apiBoardsUrl = url + constants.ROUTE_BOARDS
+            const response = await fetch(apiBoardsUrl)
             publicBoards.value = await response.json()
         } catch (e) {
             console.log(e)
+            publicBoards.value = []
         }
     }
     onMounted(async ()  => {

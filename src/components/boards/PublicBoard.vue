@@ -46,10 +46,13 @@ const onBoardClickHandler = () => {
     <div @click="onBoardClickHandler" class="publicBoard p-3 m-2 "
          :class="userIsAllowed ? 'cursorAllowed' : 'cursorNotAllowed'" :title="divTitle">
         <h2>{{ props.board.title }}</h2>
-        <p class="text-right">created by
+        <div>
+            <div class="text-left"><a href="#">invite me</a> </div>
+        <div class="text-right">created by
             <a href="#" @hover.stop @click.stop title="Send private message">{{ props.board.createdBy.userName }}</a>
             @{{ date }}
-        </p>
+        </div>
+        </div>
     </div>
 </template>
 

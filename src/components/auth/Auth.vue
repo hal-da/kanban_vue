@@ -31,7 +31,8 @@ const state = reactive({
     loading: false,
     newBoardTitle: '',
     originalBoardToCompareWithChangedBoard: {},
-    loginError: ''
+    loginError: '',
+    emailError: '',
 
 })
 
@@ -45,6 +46,7 @@ const loginClickHandler = async () => {
     else {
         state.loginError = res.message
     }
+    await publicBoardsStore.fetchPublicBoards()
     state.loading = false
 }
 
@@ -52,11 +54,6 @@ const logoutClickHandler = async () => {
   toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
   await authStore.logout()
     await router.push({name: 'home'})
-}
-
-const openEditBoardClickHandler = () => {
-    privateBoardCopy.value = {...privateBoard.value}
-    state.displayEditBoardModal = !state.displayEditBoardModal
 }
 
 const cancelEditBoardClickHandler = (e) => {
@@ -72,12 +69,7 @@ const closeCreateBord = () => {
     state.displayCreateBoardModal = false
 }
 
-const createEventHandler = (e) => {
-    console.log('create event handler', e)
-    // state.displayCreateBoardModal = false
-    // state.displayEditBoardModal = false
 
-}
 
 const clickOpenLoginDialogHandler = () => {
   state.loginError = ''
@@ -88,7 +80,6 @@ const clickOpenLoginDialogHandler = () => {
 
 <template>
     <div v-if="authStore.isLoggedIn">
-        <Button v-if="privateBoard?.userIsAdmin" text class="pr-0" @click="openEditBoardClickHandler">edit board</Button>
         <Button v-if="!Object.values(privateBoard).length" text class="pr-0" @click="state.displayCreateBoardModal = true">create board</Button>
         <Button text disabled class="pr-0">hello, {{ authStore.user.userName }}</Button>
         <Button @click="logoutClickHandler" text>logout</Button>
@@ -101,16 +92,6 @@ const clickOpenLoginDialogHandler = () => {
                 <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
             </template>
         </Dialog>
-        <Dialog v-model:visible="state.displayEditBoardModal"
-                modal
-                :style="{ width: '50vw' }"
-                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-                @close="cancelEditBoardClickHandler"
-        >
-            <template #container="{  }">
-                <EditBoard :original_board="privateBoard" @cancel="cancelEditBoardClickHandler" @create="createEventHandler" :title="'Edit Board'"/>
-            </template>
-        </Dialog>
     </div>
     <div v-else>
         <Button @click="state.displayRegisterDialog = !state.displayRegisterDialog" text>Register</Button>
@@ -121,6 +102,8 @@ const clickOpenLoginDialogHandler = () => {
                 <FloatLabel class="mt-3">
                     <InputText id="email" v-model="state.email" @change="state.loginError = ''" />
                     <label for="email" style="background-color: #262626; color: white">Email</label>
+                    <p v-if="state.emailError" class="text-red-600">{{ state.emailError }}</p>
+
                 </FloatLabel>
                 <FloatLabel class="mt-4">
                     <Password id="password" v-model="state.password" @change="state.loginError = ''"  :feedback="false" />

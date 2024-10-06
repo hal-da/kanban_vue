@@ -19,14 +19,8 @@ const {title, users} = defineProps({
     },
 })
 
-console.log('users',users)
-
 const value = ref([...users.map(user => user.userName)]);
 const items = ref([]);
-
-
-console.log('users',users)
-console.log('items',items.value)
 
 const search = (event) => {
     items.value = [...publicUsers.value.map(user => user.userName).filter(userName => userName.toLowerCase().includes(event.query.toLowerCase()))]
@@ -46,8 +40,10 @@ const addClickHandler = (event) => {
 <template>
 
     <div class="flex-column flex-1">
-        <div>{{ title }}:</div>
-        <AutoComplete v-model="value"  forceSelection multiple  :suggestions="items" @complete="search" class="py-0" @change="addClickHandler" />
+        <FloatLabel>
+        <AutoComplete v-model="value" id="useers" forceSelection multiple  :suggestions="items" @complete="search" class="py-0" @change="addClickHandler" />
+        <label for="users">Type to search for {{title}}</label>
+        </FloatLabel>
     </div>
 </template>
 

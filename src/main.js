@@ -5,6 +5,7 @@ import 'primeflex/primeflex.css'
 import 'primeicons/primeicons.css'
 import 'primevue/resources/themes/md-dark-indigo/theme.css'
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 import App from './App.vue'
@@ -16,5 +17,7 @@ app.use(createPinia())
 app.use(router)
 app.use(PrimeVue, {ripple: true});
 app.use(ToastService);
+app.use(ConfirmationService);
+
 
 app.mount('#app')

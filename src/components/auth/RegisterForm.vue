@@ -16,7 +16,8 @@ const state = reactive({
     passwordConfirm: '',
     loading: false,
     errorMessage: '',
-    userNameError: ''
+    userNameError: '',
+    emailError: ''
 })
 
 
@@ -52,9 +53,18 @@ const registerBtnDisabled = computed(() => {
         || state.password.length < 1
         || state.passwordConfirm.length < 1
         || state.password !== state.passwordConfirm
-        || !state.email.includes('@')
+        || !state.email.includes('@') || state.email.length < 3
         || userNameNotUnique.value
 })
+
+const validateEmail = () => {
+    console.log('validate email')
+    if (!state.email.includes('@') || state.email.length < 3) {
+        state.emailError = 'Invalid email'
+    } else {
+        state.emailError = ''
+    }
+}
 
 </script>
 
@@ -69,8 +79,10 @@ const registerBtnDisabled = computed(() => {
         </FloatLabel>
 
         <FloatLabel class="mt-3">
-            <InputText type="email" v-model="state.email" id="email" minlength="1" maxlength="80"/>
+            <InputText type="email" v-model="state.email" id="email" minlength="1" maxlength="80" @blur="validateEmail"/>
             <label for="email" style="background-color: #262626; color: white">Email</label>
+            <p v-if="state.emailError" class="text-red-600">{{ state.emailError }}</p>
+
         </FloatLabel>
 
         <FloatLabel class="mt-3">
