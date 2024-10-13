@@ -14,7 +14,6 @@ const toast = useToast();
 const privateBoardStore = usePrivateBoardStore()
 const {privateBoard} = storeToRefs(privateBoardStore)
 
-const privateBoardCopy = ref({})
 
 const authStore = useAuthStore();
 const publicBoardsStore = usePublicBoardsStore()

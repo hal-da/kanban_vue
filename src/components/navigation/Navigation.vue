@@ -9,7 +9,7 @@ const authStore = useAuthStore()
 const route = useRoute();
 const items = ref([
     {label: 'Home', icon: 'pi pi-home', route: '/'},
-    {label: 'About', icon: 'pi pi-star', route: '/about'}
+    {label: 'Profile', icon: 'pi pi-star', route: '/profile'}
 ])
 
 watch(route,(newRoute) => {

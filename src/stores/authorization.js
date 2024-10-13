@@ -5,6 +5,7 @@ import {localStorageKeys, routes, url} from "@/components/utilities/constants.js
 export const useAuthStore = defineStore('auth', () => {
     const authToken = ref('')
     const user = ref({})
+    const userDetails = ref({})
     const userId = computed(() => user.value.id)
     const isLoggedIn = computed(() => authToken.value !== '')
 
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
                 localStorage.setItem(localStorageKeys.LS_AUTH_TOKEN, loginResponseJson.token)
                 authToken.value = loginResponseJson.token
                 user.value = await fetchUser()
+                userDetails.value = await getUserDetails(user.value.id)
                 return Promise.resolve({success: true, user: {...user.value}})
             }
             const reason = await loginResponse.json()
@@ -58,6 +60,11 @@ export const useAuthStore = defineStore('auth', () => {
             if (validateResponse.status === 200) {
                 authToken.value = token
                 const userData = await fetchUser();
+                console.log(userData)
+                if (userData.id) {
+                    console.log('fetching user details')
+                    userDetails.value = await getUserDetails(userData.id)
+                }
                 setUser(userData)
             }
         } else {
@@ -76,6 +83,18 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = {}
         localStorage.removeItem(localStorageKeys.LS_AUTH_TOKEN)
     }
+    const getUserDetails = async (userId) => {
+        console.log('fetching user details in getUserDetails', userId)
+        const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}/details`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${authToken.value}`
+            }
+        })
+        const userDetailsResponse = await response.json()
+        console.log('user details response', userDetailsResponse)
+        return userDetailsResponse
+    }
 
     const register = async (userName, email, password1, password2) => {
         try {
@@ -93,7 +112,6 @@ export const useAuthStore = defineStore('auth', () => {
                 },
                 body: JSON.stringify(registerData)
             })
-            console.log(registerResponse)
             if (registerResponse.ok) {
                 await login(email, password1)
 
@@ -107,5 +125,5 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return {authToken, user, isLoggedIn, setAuthToken, setUser, logout, fetchUser, login, userId, register}
+    return {authToken, user, userDetails, isLoggedIn, setAuthToken, setUser, logout, fetchUser, login, userId, register, getUserDetails}
 })
