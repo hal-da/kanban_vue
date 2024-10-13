@@ -19,6 +19,9 @@ export const usePrivateBoardStore = defineStore('privateBoard', () => {
             privateBoard.value = await response.json()
             privateBoard.value.userIsAdmin = userIsAdmin(user)
             privateBoard.value.columns.sort((a, b) => a.order - b.order)
+            privateBoard.value.columns.forEach(column => {
+                column.tasks.sort((a, b) => new Date(a.lastChangeAt).getTime() > new Date(b.lastChangeAt).getTime() ? 1 : -1)
+            })
             return {success: true, board: privateBoard.value}
         } catch (e) {
             return {success: false, message: e.message}

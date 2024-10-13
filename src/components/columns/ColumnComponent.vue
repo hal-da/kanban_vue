@@ -16,7 +16,6 @@ const confirm = useConfirm();
 const authStore = useAuthStore();
 const toast = useToast();
 
-
 const state = reactive({
     newColumnTitle: props.column.title || '',
     newColumnWipLimit: props.column.wipLimit || 2,
@@ -92,9 +91,6 @@ const confirmDeleteColumn = () => {
 
 const dragStart = (e, task) => {
     e.dataTransfer.setData("text", JSON.stringify(task));
-    console.log(props.column)
-    console.log('dragging', task)
-    console.log('from column', props.column.id)
 }
 
 const dragEnter = () => {
@@ -110,15 +106,17 @@ const drop = async (e) => {
     task.columnId = props.column.id
 
     const res = await privateBoardStore.updateTask(task)
-    console.log(res)
     if(res.success) {
         toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Task was successfully moved' , life: 3000 });
     } else {
         toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: res.message, life: 3000});
     }
-    console.log('dropped', task)
-    console.log('to column', props.column.id)
 }
+
+const wipClass = computed(() => {
+    return props.column.tasks.length > props.column.wipLimit ? 'redText' :
+        props.column.tasks.length === props.column.wipLimit ? 'yellowText' : 'greenText'
+})
 
 </script>
 
@@ -132,7 +130,12 @@ const drop = async (e) => {
         <div class="flex">
             <h3 class="pl-2">{{props.column.title}} </h3>
             <div class="ml-auto py-2 mr-2">
-                <span class="pr-0" style="font-size:small">Limit: {{props.column.wipLimit}}</span>
+                <span
+                    :class="['pr-0']"
+                    style="font-size:small">
+                        WIP:
+                    <span :class="[wipClass]">{{ props.column.tasks.length }} </span> /  {{props.column.wipLimit}}
+                </span>
                 <i v-if="privateBoard?.userIsAdmin" class="pi pi-cog ml-2 editBoard text-primary-600" @click="openEditColumnDialog"/>
             </div>
 
@@ -203,6 +206,18 @@ const drop = async (e) => {
 
 .dragEnter {
     background-color:#1c1b1b;
+}
+
+.greenText {
+    color: green;
+}
+
+.redText {
+    color: red;
+}
+
+.yellowText {
+    color: orange;
 }
 
 </style>
