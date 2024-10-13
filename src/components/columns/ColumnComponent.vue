@@ -104,8 +104,8 @@ const confirmDeleteColumn = () => {
 
         </div>
         <Divider class="mt-0"/>
-        <Task v-for="task in props.column.tasks" :task="task" :key="task.id"/>
-        <pre>{{column}}</pre>
+        <Task v-for="task in props.column.tasks" :task="task" :column-id="props.column.id" :key="task.id" class="grabbable" draggable="true"/>
+<!--        <pre>{{column}}</pre>-->
         <Dialog v-model:visible="state.displayEditColumnDialog" modal header="Edit Column" :style="{ width: '50vw' }" @hide="cancelEditColumnClickHandler"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <div class="p-fluid">
@@ -144,6 +144,20 @@ const confirmDeleteColumn = () => {
 }
 .editBoard {
     cursor: pointer;
+}
+
+.grabbable {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 </style>
