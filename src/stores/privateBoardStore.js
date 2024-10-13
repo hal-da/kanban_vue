@@ -44,5 +44,29 @@ export const usePrivateBoardStore = defineStore('privateBoard', () => {
         return await fetchPrivateBoard(privateBoard.value.id)
     }
 
-    return { privateBoard, fetchPrivateBoard, resetBoard, refreshBoard }
+    const updateTask = async (task) => {
+        const {authToken} = useAuthStore()
+        const boardId = privateBoard.value.id
+        const columnId = task.columnId
+        try {
+            const response = await fetch(url + routes.ROUTE_TASKS(boardId, columnId), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${authToken}`
+                },
+                body: JSON.stringify(task)
+            })
+
+            console.log(response)
+            if(response.ok){
+                await refreshBoard()
+            }
+            return {success: response.status === 200}
+        } catch (e) {
+            return {success: false, message: e.message}
+        }
+    }
+
+    return { privateBoard, fetchPrivateBoard, resetBoard, refreshBoard, updateTask }
 })

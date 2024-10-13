@@ -20,7 +20,8 @@ const toast = useToast();
 const state = reactive({
     newColumnTitle: props.column.title || '',
     newColumnWipLimit: props.column.wipLimit || 2,
-    displayEditColumnDialog: false
+    displayEditColumnDialog: false,
+    dragEnter: false
 })
 
 const openEditColumnDialog = () => {
@@ -89,12 +90,45 @@ const confirmDeleteColumn = () => {
     });
 };
 
+const dragStart = (e, task) => {
+    e.dataTransfer.setData("text", JSON.stringify(task));
+    console.log(props.column)
+    console.log('dragging', task)
+    console.log('from column', props.column.id)
+}
 
+const dragEnter = () => {
+    state.dragEnter = true
+}
+
+const drop = async (e) => {
+    state.dragEnter = false
+    const task = JSON.parse(e.dataTransfer.getData("text"))
+
+    if (task.columnId === props.column.id) return
+
+    task.columnId = props.column.id
+
+    const res = await privateBoardStore.updateTask(task)
+    console.log(res)
+    if(res.success) {
+        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Task was successfully moved' , life: 3000 });
+    } else {
+        toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: res.message, life: 3000});
+    }
+    console.log('dropped', task)
+    console.log('to column', props.column.id)
+}
 
 </script>
 
 <template>
-    <div class="column m-1">
+    <div :class="['column',' m-1', 'dropzone-column', state.dragEnter ? 'dragEnter' : ''  ]"
+         @dragenter.prevent="dragEnter"
+         @dragleave.stop="state.dragEnter = false"
+         @dragover.prevent
+         @drop="drop"
+    >
         <div class="flex">
             <h3 class="pl-2">{{props.column.title}} </h3>
             <div class="ml-auto py-2 mr-2">
@@ -104,8 +138,14 @@ const confirmDeleteColumn = () => {
 
         </div>
         <Divider class="mt-0"/>
-        <Task v-for="task in props.column.tasks" :task="task" :column-id="props.column.id" :key="task.id" class="grabbable" draggable="true"/>
-<!--        <pre>{{column}}</pre>-->
+        <Task v-for="task in props.column.tasks"
+              :task="task"
+              :column-id="props.column.id"
+              :key="task.id"
+              class="grabbable"
+              draggable="true"
+              @dragstart="dragStart($event,task)"
+        />
         <Dialog v-model:visible="state.displayEditColumnDialog" modal header="Edit Column" :style="{ width: '50vw' }" @hide="cancelEditColumnClickHandler"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <div class="p-fluid">
@@ -132,6 +172,7 @@ const confirmDeleteColumn = () => {
             </div>
         </Dialog>
         <ConfirmPopup></ConfirmPopup>
+<!--        <pre>{{ column }}</pre>-->
     </div>
 </template>
 
@@ -158,6 +199,10 @@ const confirmDeleteColumn = () => {
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
+}
+
+.dragEnter {
+    background-color:#1c1b1b;
 }
 
 </style>

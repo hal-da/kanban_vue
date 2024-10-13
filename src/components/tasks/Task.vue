@@ -5,13 +5,14 @@ import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {storeToRefs} from "pinia";
 import {useAuthStore} from "@/stores/authorization.js";
 import {useToast} from "primevue/usetoast";
+import {ref} from "vue";
 
 const authStore = useAuthStore();
 const privateBoardStore = usePrivateBoardStore()
 const {privateBoard} = storeToRefs(privateBoardStore)
 const props = defineProps(['task', 'columnId'])
 const toast = useToast();
-
+const oldTask = ref(JSON.parse(JSON.stringify(props.task)))
 
 const saveTask = async () => {
     const boardId = privateBoard.value.id
@@ -37,12 +38,10 @@ const saveTask = async () => {
 watchDebounced(
     () => props,
      (newVal) => {
-        const task = {...newVal.task}
-        const taskId = task.id
-        console.log('watched', task, taskId)
+        if(JSON.stringify(newVal.task) === JSON.stringify(oldTask.value)) return
         saveTask()
     },
-    {deep: true, debounce: 1000, maxWait: 2000 },
+    {deep: true, debounce: 1000, maxWait: 20000},
 )
 
 </script>
