@@ -22,6 +22,11 @@ const router = createRouter({
             name: 'board',
             component: () => import('../views/PrivateBoard.vue'),
             props: true
+        },
+        {
+            path:'/admin',
+            name: 'admin',
+            component: () => import('../views/AdminView.vue')
         }
     ]
 })

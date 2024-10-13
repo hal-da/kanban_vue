@@ -2,7 +2,6 @@
 
 import {computed, reactive, ref} from "vue";
 import {useAuthStore} from "@/stores/authorization.js";
-import {url, routes} from "@/components/utilities/constants.js";
 import {usePublicBoardsStore} from "@/stores/publicBoards.js";
 import router from "@/router/index.js";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
@@ -76,10 +75,17 @@ const clickOpenLoginDialogHandler = () => {
   state.displayLoginDialog = true
 }
 
+const pushToAdminView = () => {
+    router.push({name: 'admin'})
+}
+
+
+
 </script>
 
 <template>
     <div v-if="authStore.isLoggedIn">
+        <Button v-if="authStore.user.role === 'ADMIN'" @click="pushToAdminView" text class="pr-0">Admin panel</Button>
         <Button v-if="!Object.values(privateBoard).length" text class="pr-0" @click="state.displayCreateBoardModal = true">create board</Button>
         <Button text disabled class="pr-0">hello, {{ authStore.user.userName }}</Button>
         <Button @click="logoutClickHandler" text>logout</Button>

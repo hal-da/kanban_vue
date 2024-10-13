@@ -3,8 +3,9 @@ import {ref, watch} from "vue";
 import Auth from "@/components/auth/Auth.vue";
 import {useRoute} from "vue-router";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
+import {useAuthStore} from "@/stores/authorization.js";
 const privateBoardStore = usePrivateBoardStore()
-
+const authStore = useAuthStore()
 const route = useRoute();
 const items = ref([
     {label: 'Home', icon: 'pi pi-home', route: '/'},
@@ -16,6 +17,8 @@ watch(route,(newRoute) => {
         privateBoardStore.resetBoard()
     }
 })
+
+console.log(authStore.user)
 
 </script>
 
