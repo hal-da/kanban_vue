@@ -60,6 +60,10 @@ export const useAuthStore = defineStore('auth', () => {
             if (validateResponse.status === 200) {
                 authToken.value = token
                 const userData = await fetchUser();
+                if(userData.error) {
+                    logout()
+                    return
+                }
                 console.log(userData)
                 if (userData.id) {
                     console.log('fetching user details')

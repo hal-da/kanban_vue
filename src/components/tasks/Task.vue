@@ -49,12 +49,12 @@ watchDebounced(
 <template>
     <div class="task " >
         <div class="flex justify-content-between">
-            <h3 class="m-1">{{props.task.title}} {{ new Date(props.task.lastChangeAt).getTime()}}</h3>
+            <h3 class="m-1">{{props.task.title}}</h3>
             <i class="pi pi-ellipsis-v pt-2 grab " ></i>
         </div>
         <Divider class="my-0"/>
         <div class="p-1">
-            <Textarea v-model="props.task.description" placeholder="description" class="w-full" auto-resize :rows="3    " />
+            <Textarea :disabled="props.task.done" v-model="props.task.description" placeholder="description" class="w-full" auto-resize :rows="3    " />
         </div>
         <div>
             <Checkbox id="taskDoneSwitch" v-model="props.task.done" class="m-1" binary  />
