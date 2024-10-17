@@ -1,6 +1,8 @@
 import {computed, onMounted, ref} from "vue";
 import {defineStore} from "pinia";
 import {localStorageKeys, routes, url} from "@/components/utilities/constants.js";
+import {imageService} from "@/components/utilities/services.js";
+import router from "@/router/index.js";
 
 export const useAuthStore = defineStore('auth', () => {
     const authToken = ref('')
@@ -19,7 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
         return await userResponse.json();
     }
 
-    async function login(email, password) {
+    async function login(email, password, newImageFile) {
         try {
             const loginData = {
                 email,
@@ -34,8 +36,28 @@ export const useAuthStore = defineStore('auth', () => {
             })
             if (loginResponse.status === 200) {
                 const loginResponseJson = await loginResponse.json();
+
                 localStorage.setItem(localStorageKeys.LS_AUTH_TOKEN, loginResponseJson.token)
                 authToken.value = loginResponseJson.token
+                if(newImageFile) {
+
+                    const formData = new FormData()
+                    formData.append('image', newImageFile)
+
+                    const imageResponse = await fetch(url + routes.ROUTE_IMAGES, {
+                        method: 'POST',
+                        headers: {Authorization: `Bearer ${authToken.value }`},
+                        body: formData
+                    })
+
+                    console.log('imageUrl in auth service', imageResponse)
+                    const {imageUrl} = await imageResponse.json()
+
+                    if (imageUrl) {
+                        user.image = imageUrl
+                        userDetails.image = imageUrl
+                    }
+                }
                 user.value = await fetchUser()
                 userDetails.value = await getUserDetails(user.value.id)
                 return Promise.resolve({success: true, user: {...user.value}})
@@ -46,6 +68,20 @@ export const useAuthStore = defineStore('auth', () => {
         } catch (e) {
             return Promise.resolve({success: false, message: e.message})
         }
+    }
+
+    async function uploadUserImage(newImageFile) {
+        const formData = new FormData()
+        formData.append('image', newImageFile)
+
+        const response = await fetch(url + routes.ROUTE_IMAGES, {
+            method: 'POST',
+            headers: {Authorization: `Bearer ${authToken}`},
+            body: formData
+        })
+
+        const {imageUrl} = await response.json()
+        return await imageService(imageUrl)
     }
 
     onMounted(async () => {
@@ -83,6 +119,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = userObj
     }
     const logout = () => {
+        console.log('logging out')
         authToken.value = ''
         user.value = {}
         localStorage.removeItem(localStorageKeys.LS_AUTH_TOKEN)
@@ -100,7 +137,7 @@ export const useAuthStore = defineStore('auth', () => {
         return userDetailsResponse
     }
 
-    const register = async (userName, email, password1, password2) => {
+    const register = async (userName, email, password1, password2, newImageFile) => {
         try {
             const registerData = {
                 email,
@@ -117,7 +154,7 @@ export const useAuthStore = defineStore('auth', () => {
                 body: JSON.stringify(registerData)
             })
             if (registerResponse.ok) {
-                await login(email, password1)
+                await login(email, password1, newImageFile)
 
                 return Promise.resolve({success: true})
             }

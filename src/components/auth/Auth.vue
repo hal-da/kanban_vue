@@ -49,9 +49,10 @@ const loginClickHandler = async () => {
 }
 
 const logoutClickHandler = async () => {
-  toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
-  await authStore.logout()
-    await router.push({name: 'home'})
+    toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
+    router.push({name: 'home'}).then(()=>{
+        authStore.logout()
+    })
 }
 
 const cancelEditBoardClickHandler = (e) => {
@@ -124,7 +125,7 @@ const pushToAdminView = () => {
                 </div>
             </div>
         </Dialog>
-        <Dialog v-model:visible="state.displayRegisterDialog" modal header="Register" :style="{ width: '50vw' }"
+        <Dialog v-if="useAuthStore" v-model:visible="state.displayRegisterDialog" modal header="Register" :style="{ width: '50vw' }"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <RegisterForm/>
         </Dialog>

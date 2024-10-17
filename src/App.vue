@@ -14,16 +14,16 @@ onMounted(async () => {
 <template>
     <header>
         <div>
-            <nav>
+            <nav class="">
                 <Navigation/>
             </nav>
         </div>
     </header>
-    <RouterView/>
-  <Toast position="top-left" group="tl" />
-  <Toast position="bottom-left" group="bl" />
-  <Toast position="bottom-right" group="br" />
+    <div class="xl:w-8 lg:w-10 mx-auto">
 
+        <RouterView />
+    </div>
+  <Toast position="bottom-left" group="bl" />
 </template>
 
 <style scoped>
