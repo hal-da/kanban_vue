@@ -5,6 +5,7 @@ import {useAuthStore} from "@/stores/authorization.js";
 import {usePublicUserStore} from "@/stores/publicUserStore.js";
 import { useToast } from 'primevue/usetoast';
 import UserImage from "@/components/auth/UserImage.vue";
+import CountrySelect from "@/components/auth/CountrySelect.vue";
 console.log('RegisterForm.vue')
 const toast = useToast();
 const publicUserStore = usePublicUserStore()
@@ -15,6 +16,7 @@ const state = reactive({
     email: '',
     password: '',
     passwordConfirm: '',
+    cca3:'',
     loading: false,
     errorMessage: '',
     userNameError: '',
@@ -26,7 +28,7 @@ const state = reactive({
 
 const registerClickHandler = async () => {
     state.loading = true
-    const res = await authStore.register(state.userName, state.email, state.password, state.passwordConfirm, state.newImageFile)
+    const res = await authStore.register(state.userName, state.email, state.password, state.passwordConfirm, state.newImageFile, state.cca3)
     if (!res.success) {
         state.errorMessage = res.error
         toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: state.errorMessage , life: 3000 });
@@ -77,6 +79,13 @@ const newUserImageSelected = (e) => {
     state.newImageFile = file
     state.newImageUrl = URL.createObjectURL(file)
 }
+
+const countryChangedEmitHandler = (e) => {
+    console.log('country changed', e)
+    state.cca3 = e.cca3
+}
+
+
 </script>
 
 <template>
@@ -88,6 +97,7 @@ const newUserImageSelected = (e) => {
             </div>
             <input type="file" ref="registerNewUserImage" class="hidden" @change="newUserImageSelected">
         </div>
+        <CountrySelect @change="countryChangedEmitHandler"  />
         <FloatLabel class="mt-3">
             <InputText v-model="state.userName" id="registerUserName" minlength="1" maxlength="80"/>
             <label for="registerUserName" style="background-color: #262626; color: white">User Name</label>

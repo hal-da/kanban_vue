@@ -6,9 +6,9 @@ setTimeout(() => {
 // import {useAuthStore} from "@/stores/authorization.js";
 import {localStorageKeys, routes, url} from "@/components/utilities/constants.js";
 // const authStore = useAuthStore()
-const token = localStorage.getItem(localStorageKeys.LS_AUTH_TOKEN)
 
 export const imageService = async (imageUrl) => {
+    const token = localStorage.getItem(localStorageKeys.LS_AUTH_TOKEN)
     console.log(token)
     if (imageUrl.startsWith('https://')) {
         return imageUrl

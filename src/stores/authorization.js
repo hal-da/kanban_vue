@@ -2,7 +2,6 @@ import {computed, onMounted, ref} from "vue";
 import {defineStore} from "pinia";
 import {localStorageKeys, routes, url} from "@/components/utilities/constants.js";
 import {imageService} from "@/components/utilities/services.js";
-import router from "@/router/index.js";
 
 export const useAuthStore = defineStore('auth', () => {
     const authToken = ref('')
@@ -39,14 +38,14 @@ export const useAuthStore = defineStore('auth', () => {
 
                 localStorage.setItem(localStorageKeys.LS_AUTH_TOKEN, loginResponseJson.token)
                 authToken.value = loginResponseJson.token
-                if(newImageFile) {
+                if (newImageFile) {
 
                     const formData = new FormData()
                     formData.append('image', newImageFile)
 
                     const imageResponse = await fetch(url + routes.ROUTE_IMAGES, {
                         method: 'POST',
-                        headers: {Authorization: `Bearer ${authToken.value }`},
+                        headers: {Authorization: `Bearer ${authToken.value}`},
                         body: formData
                     })
 
@@ -96,7 +95,7 @@ export const useAuthStore = defineStore('auth', () => {
             if (validateResponse.status === 200) {
                 authToken.value = token
                 const userData = await fetchUser();
-                if(userData.error) {
+                if (userData.error) {
                     logout()
                     return
                 }
@@ -137,14 +136,15 @@ export const useAuthStore = defineStore('auth', () => {
         return userDetailsResponse
     }
 
-    const register = async (userName, email, password1, password2, newImageFile) => {
+    const register = async (userName, email, password1, password2, newImageFile, cca3) => {
         try {
+            cca3 = cca3 || 'Erdbeerland'
             const registerData = {
                 email,
                 password1,
                 password2,
                 userName,
-
+                cca3
             }
             const registerResponse = await fetch(`${url}${routes.ROUTE_REGISTER}`, {
                 method: 'POST',
@@ -155,16 +155,55 @@ export const useAuthStore = defineStore('auth', () => {
             })
             if (registerResponse.ok) {
                 await login(email, password1, newImageFile)
-
                 return Promise.resolve({success: true})
             }
             const reason = await registerResponse.json()
-            return Promise.resolve({success: false, error:reason.error})
+            return Promise.resolve({success: false, error: reason.error})
 
         } catch (e) {
             return Promise.resolve({success: false, message: e.message})
         }
     }
 
-    return {authToken, user, userDetails, isLoggedIn, setAuthToken, setUser, logout, fetchUser, login, userId, register, getUserDetails}
+    const updateUser = async (updateObject) => {
+
+        try {
+            const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId.value}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${authToken.value}`
+                },
+                body: JSON.stringify(updateObject)
+            })
+            console.log(response)
+            if (response.ok) {
+                const updatedUser = await response.json()
+                user.value = updatedUser
+                return Promise.resolve({success: true, user: updatedUser})
+            }
+            const res = await response.json()
+            console.log(res)
+            return Promise.resolve({success: false, message:res})
+        } catch (e) {
+            return Promise.resolve({success: false, message: e.message})
+        }
+
+
+    }
+
+    return {
+        authToken,
+        user,
+        userDetails,
+        isLoggedIn,
+        userId,
+        setAuthToken,
+        setUser,
+        logout,
+        updateUser,
+        login,
+        register,
+        getUserDetails
+    }
 })

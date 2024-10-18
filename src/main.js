@@ -6,7 +6,7 @@ import 'primeicons/primeicons.css'
 import 'primevue/resources/themes/md-dark-indigo/theme.css'
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
-
+import FloatLabel from 'primevue/floatlabel';
 
 import App from './App.vue'
 import router from './router'
@@ -18,6 +18,7 @@ app.use(PrimeVue, {ripple: true});
 app.use(ToastService);
 app.use(ConfirmationService);
 app.use(router)
+app.component('FloatLabel', FloatLabel);
 
 
 app.mount('#app')

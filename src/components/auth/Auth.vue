@@ -109,7 +109,6 @@ const pushToAdminView = () => {
                     <InputText id="email" v-model="state.email" @change="state.loginError = ''" />
                     <label for="email" style="background-color: #262626; color: white">Email</label>
                     <p v-if="state.emailError" class="text-red-600">{{ state.emailError }}</p>
-
                 </FloatLabel>
                 <FloatLabel class="mt-4">
                     <Password id="password" v-model="state.password" @change="state.loginError = ''"  :feedback="false" />

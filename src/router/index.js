@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import {useAuthStore} from "@/stores/authorization.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,15 @@ const router = createRouter({
     ]
 })
 
-// todo: route guard
+
+router.beforeEach((to, from, next) => {
+    const {isLoggedIn} = useAuthStore()
+
+    if(to.name !== 'home' && !isLoggedIn) {
+        next({name: 'home'})
+    } else {
+        next()
+    }
+})
 
 export default router

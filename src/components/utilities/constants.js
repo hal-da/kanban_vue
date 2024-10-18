@@ -18,6 +18,25 @@ export const localStorageKeys = {
     LS_USERS:'ls_users',
     LS_USER_EMAIL:'ls_user_email',
     LS_USER_ID:'ls_user_id',
+    LS_COUNTRIES:'ls_countries',
+}
+
+export const ERDBEERLAND = {
+    name:{
+        common: 'Erdbeerland'
+    },
+    flag: '🍓',
+    cca3: 'ERD',
+}
+
+export const BANANENREPUBLIK = {
+    name:{
+        common: 'Bananenrepublik'
+    },
+    flag: '🍌',
+    cca3: 'BAN',
 }
 
 export const NEW_BOARD_COLUMN_NAMES = ['BACKLOG','TODO', 'IN_PROGRESS', 'DONE']
+
+export const COUNTRIES_API = 'https://restcountries.com/v3.1/all?fields=name,flag,flags,cca3'
