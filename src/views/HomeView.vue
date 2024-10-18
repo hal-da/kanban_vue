@@ -3,12 +3,12 @@ import { usePublicBoardsStore} from "@/stores/publicBoards.js";
 import { usePublicUserStore} from "@/stores/publicUserStore.js";
 import PublicBoard from "@/components/boards/PublicBoard.vue";
 import {storeToRefs} from "pinia";
+import {useCountriesStore} from "@/stores/countries.js";
 
-const publicUserStore = usePublicUserStore()
+usePublicUserStore()
+useCountriesStore()
 const publicBoardsStore = storeToRefs(usePublicBoardsStore())
 const publicBoards = publicBoardsStore.publicBoards
-publicUserStore.fetchPublicUsers()
-console.log('homeview')
 </script>
 
 <template>

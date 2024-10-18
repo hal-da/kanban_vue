@@ -49,9 +49,10 @@ const loginClickHandler = async () => {
 }
 
 const logoutClickHandler = async () => {
-  toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
-  await authStore.logout()
-    await router.push({name: 'home'})
+    toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
+    router.push({name: 'home'}).then(()=>{
+        authStore.logout()
+    })
 }
 
 const cancelEditBoardClickHandler = (e) => {
@@ -108,7 +109,6 @@ const pushToAdminView = () => {
                     <InputText id="email" v-model="state.email" @change="state.loginError = ''" />
                     <label for="email" style="background-color: #262626; color: white">Email</label>
                     <p v-if="state.emailError" class="text-red-600">{{ state.emailError }}</p>
-
                 </FloatLabel>
                 <FloatLabel class="mt-4">
                     <Password id="password" v-model="state.password" @change="state.loginError = ''"  :feedback="false" />
@@ -124,7 +124,7 @@ const pushToAdminView = () => {
                 </div>
             </div>
         </Dialog>
-        <Dialog v-model:visible="state.displayRegisterDialog" modal header="Register" :style="{ width: '50vw' }"
+        <Dialog v-if="useAuthStore" v-model:visible="state.displayRegisterDialog" modal header="Register" :style="{ width: '50vw' }"
                 :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <RegisterForm/>
         </Dialog>

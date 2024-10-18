@@ -6,18 +6,19 @@ import 'primeicons/primeicons.css'
 import 'primevue/resources/themes/md-dark-indigo/theme.css'
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
-
+import FloatLabel from 'primevue/floatlabel';
 
 import App from './App.vue'
 import router from './router'
-
+const pinia = createPinia()
 const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
+app.use(pinia)
 app.use(PrimeVue, {ripple: true});
 app.use(ToastService);
 app.use(ConfirmationService);
+app.use(router)
+app.component('FloatLabel', FloatLabel);
 
 
 app.mount('#app')
