@@ -54,8 +54,8 @@ const pushToProfile =  () => {
 
 <template>
     <div>
-        <div v-if="!imageSrcObjectUrl && !newImageUrl" class="user-image-container" @click="active ? $refs.newImageInput.click() : pushToProfile()">
-            <i :class="['pi', 'pi-user', active ? 'no-user-image' : 'userLogo']"></i>
+        <div v-if="!imageSrcObjectUrl && !newImageUrl" :class="[active ? 'user-image-container' : 'userLogo']"  @click="active ? $refs.newImageInput.click() : pushToProfile()">
+            <i :class="['pi', 'pi-user', active ? 'no-user-image' : 'userIcon']"></i>
         </div>
         <img v-else :src="newImageUrl ? newImageUrl : imageSrcObjectUrl" alt="user image" :class="[active ? 'user-image-container' : 'userLogo']"  @click="active ? $refs.newImageInput.click() : pushToProfile()">
         <input v-if="active" type="file" accept="image/*" @change="imgInputChangeHandler" ref="newImageInput" class="hidden">
@@ -87,6 +87,13 @@ const pushToProfile =  () => {
     border-radius: 50%;
     cursor:pointer;
 
+}
+
+.userIcon {
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
 }
 
 </style>
