@@ -118,22 +118,21 @@ export const useAuthStore = defineStore('auth', () => {
     const logout = () => {
         authToken.value = ''
         user.value = {}
+        userDetails.value = {}
         localStorage.removeItem(localStorageKeys.LS_AUTH_TOKEN)
     }
     const getUserDetails = async (userId) => {
-        const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}/details`, {
+        const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${authToken.value}`
             }
         })
-        const userDetailsResponse = await response.json()
-        return userDetailsResponse
+        return await response.json()
     }
 
     const register = async (userName, email, password1, password2, newImageFile, cca3) => {
         try {
-            cca3 = cca3 || 'Erdbeerland'
             const registerData = {
                 email,
                 password1,
@@ -149,7 +148,40 @@ export const useAuthStore = defineStore('auth', () => {
                 body: JSON.stringify(registerData)
             })
             if (registerResponse.ok) {
-                await login(email, password1, newImageFile)
+                await login(email, password1)
+                const formData = new FormData()
+                formData.append('image', newImageFile)
+                const imageResponse = await fetch(url + routes.ROUTE_IMAGES, {
+                    method: 'POST',
+                    headers: {Authorization: `Bearer ${authToken.value}`},
+                    body: formData
+                })
+                console.log('imageResponse in auth service', imageResponse)
+                const {imageUrl} = await imageResponse.json()
+                console.log('imageUrl in auth service', imageUrl)
+                if (imageUrl) {
+                    user.image = imageUrl
+                    userDetails.image = imageUrl
+                }
+                const updateObject = {
+                    userName,
+                    email,
+                    cca3,
+                    imageUrl,
+                }
+
+                console.log('updateObject', updateObject)
+
+                const updateRes = await updateUser(updateObject)
+
+                console.log('updateResponse after updateUser', updateRes)
+
+                if(updateRes.success){
+                    return Promise.resolve({success: true, user: {...user.value}})
+                }
+                console.log('updateRes', updateRes)
+
+
                 return Promise.resolve({success: true})
             }
             const reason = await registerResponse.json()
@@ -173,7 +205,7 @@ export const useAuthStore = defineStore('auth', () => {
             })
             if (response.ok) {
                 const updatedUser = await response.json()
-                user.value = updatedUser
+                userDetails.value = updatedUser
                 return Promise.resolve({success: true, user: updatedUser})
             }
             const res = await response.json()
