@@ -1,15 +1,20 @@
 <script setup>
 
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {routes, url} from "@/components/utilities/constants.js";
 import {useAuthStore} from "@/stores/authorization.js";
 import {imageService} from "@/components/utilities/services.js";
 import {computedAsync} from "@vueuse/core";
+import router from "@/router/index.js";
 const {authToken} = useAuthStore()
 const emit = defineEmits(['new-image'])
 
-const {imgSrc} = defineProps({
-    imgSrc: String
+const {imgSrc, active} = defineProps({
+    imgSrc: String,
+    active: {
+        type: Boolean,
+        default: true
+    }
 })
 
 
@@ -38,19 +43,22 @@ const imgInputChangeHandler = async (e) => {
 const imageSrcObjectUrl = computedAsync(async () => {
     if (!imgSrc) return ''
     const blob = await imageService(imgSrc)
-    console.log('computed ', URL.createObjectURL(blob))
     return URL.createObjectURL(blob);
 })
+const pushToProfile =  () => {
+    console.log('pushing to profile')
+    router.push('/profile')
+}
 
 </script>
 
 <template>
     <div>
-        <div v-if="!imageSrcObjectUrl && !newImageUrl" class="user-image-container" @click="$refs.newImageInput.click()">
-            <i class="pi pi-user no-user-image"></i>
+        <div v-if="!imageSrcObjectUrl && !newImageUrl" class="user-image-container" @click="active ? $refs.newImageInput.click() : pushToProfile()">
+            <i :class="['pi', 'pi-user', active ? 'no-user-image' : 'userLogo']"></i>
         </div>
-        <img v-else :src="newImageUrl ? newImageUrl : imageSrcObjectUrl" alt="user image" class="user-image-container "  @click="$refs.newImageInput.click()">
-        <input type="file" accept="image/*" @change="imgInputChangeHandler" ref="newImageInput" class="hidden">
+        <img v-else :src="newImageUrl ? newImageUrl : imageSrcObjectUrl" alt="user image" :class="[active ? 'user-image-container' : 'userLogo']"  @click="active ? $refs.newImageInput.click() : pushToProfile()">
+        <input v-if="active" type="file" accept="image/*" @change="imgInputChangeHandler" ref="newImageInput" class="hidden">
     </div>
 </template>
 
@@ -71,6 +79,14 @@ const imageSrcObjectUrl = computedAsync(async () => {
     border-radius: 50%;
     margin: 0.5rem;
     cursor:pointer;
+}
+
+.userLogo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor:pointer;
+
 }
 
 </style>

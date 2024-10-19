@@ -84,7 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     onMounted(async () => {
-        const token = localStorage.getItem('kanbantastischAuthToken')
+        const token = localStorage.getItem(localStorageKeys.LS_AUTH_TOKEN)
         if (!!token) {
             const validateResponse = await fetch(`${url}${routes.ROUTE_TOKEN_VALIDATOR}`, {
                 method: 'GET',
@@ -101,7 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
                 }
                 console.log(userData)
                 if (userData.id) {
-                    console.log('fetching user details')
+                    console.log('fetching user details ###################')
                     userDetails.value = await getUserDetails(userData.id)
                 }
                 setUser(userData)
@@ -125,7 +125,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const getUserDetails = async (userId) => {
         console.log('fetching user details in getUserDetails', userId)
-        const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}/details`, {
+        const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${authToken.value}`
