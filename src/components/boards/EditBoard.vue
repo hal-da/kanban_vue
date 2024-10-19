@@ -250,10 +250,9 @@ const deleteBoard = async () => {
 </script>
 
 <template>
-    <div class="dialogBackground">
+    <div class="dialogBackground sm:min-h-full">
 <!--    <div class="p-fluid dialogBackground sm:min-w-screen sm:top-0 max-w-screen sm:min-h-full ">-->
         <div class="flex flex-row justify-content-between align-items-center">
-            <h3 class="mb-4">{{ title }}</h3>
             <div v-if="mode==='edit'"><Button :loading="state.loading" severity="danger" @click="confirmDeleteBoard">Delete Board</Button></div>
         </div>
         <FloatLabel class="mt-3 ">
@@ -319,7 +318,7 @@ const deleteBoard = async () => {
 <style scoped>
 .dialogBackground {
     background-color: #262626;
-    padding: 1rem;
+    padding: 0 1rem 1rem;
     border: 1px solid #262626;
     border-radius: 5px;
 }

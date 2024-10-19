@@ -38,14 +38,17 @@ const addClickHandler = (event) => {
 
 <template>
 
-    <div class="flex-column flex-1">
-        <FloatLabel>
-        <AutoComplete v-model="value" id="useers" forceSelection multiple  :suggestions="items" @complete="search" class="py-0" @change="addClickHandler" />
-        <label for="users">Type to search for {{title}}</label>
+    <div class="flex-column flex-grow-1">
+        <FloatLabel class="flex-grow-1 w-full">
+            <AutoComplete v-model="value" id="useers" forceSelection multiple :suggestions="items" @complete="search"
+                          class="py-0 flex-grow-1 w-full" @change="addClickHandler"/>
+            <label for="users" class="flex-grow-1">Type to search for {{ title }}</label>
         </FloatLabel>
     </div>
 </template>
 
 <style scoped>
-
+.p-autocomplete {
+    display: block;
+}
 </style>

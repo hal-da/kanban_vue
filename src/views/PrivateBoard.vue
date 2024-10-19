@@ -117,13 +117,9 @@ window.addEventListener("resize", (event) => {
     <div class="boardBody flex p-1 gap-1">
         <ColumnComponent v-for="column in privateBoard.columns" :column="column" :key="column.id" class="column-component"/>
     </div>
-    <Dialog v-model:visible="state.displayEditBoardModal"
-            modal
-            @close="cancelEditBoardClickHandler"
-    >
-        <template #container="{  }">
-            <EditBoard :original_board="privateBoard" @cancel="cancelEditBoardClickHandler" :title="'Edit Board'"/>
-        </template>
+
+    <Dialog v-model:visible="state.displayEditBoardModal" modal header="Edit Board" :style="{ width: '50rem'}" :breakpoints="{ '1199px': '75vw', '575px': '100vw' }">
+        <EditBoard :original_board="privateBoard"  @cancel="cancelEditBoardClickHandler" :title="'Edit Board'"/>
     </Dialog>
     <Dialog v-model:visible="state.newTaskDialog"
             modal
