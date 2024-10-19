@@ -4,9 +4,7 @@ import {computed, reactive} from "vue";
 import {useAuthStore} from "@/stores/authorization.js";
 import {usePublicUserStore} from "@/stores/publicUserStore.js";
 import { useToast } from 'primevue/usetoast';
-import UserImage from "@/components/auth/UserImage.vue";
 import CountrySelect from "@/components/auth/CountrySelect.vue";
-console.log('RegisterForm.vue')
 const toast = useToast();
 const publicUserStore = usePublicUserStore()
 const authStore = useAuthStore()
@@ -64,7 +62,6 @@ const registerBtnDisabled = computed(() => {
 })
 
 const validateEmail = () => {
-    console.log('validate email')
     if (!state.email.includes('@') || state.email.length < 3) {
         state.emailError = 'Invalid email'
     } else {
@@ -81,7 +78,6 @@ const newUserImageSelected = (e) => {
 }
 
 const countryChangedEmitHandler = (e) => {
-    console.log('country changed', e)
     state.cca3 = e.cca3
 }
 

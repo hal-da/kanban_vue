@@ -41,7 +41,6 @@ const editColumnClickHandler = async () => {
         })
     })
     if (res.ok) {
-        console.log('column updated')
         await privateBoardStore.fetchPrivateBoard(privateBoard.value.id)
         toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Board was successfully updated' , life: 3000 });
         state.displayEditColumnDialog = false

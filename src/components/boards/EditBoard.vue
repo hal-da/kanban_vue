@@ -235,7 +235,7 @@ const deleteBoard = async () => {
         method: 'DELETE',
         headers: {Authorization: `Bearer ${authStore.authToken}`}
     })
-    console.log(res)
+    console.log(res)y
     if (res.ok) {
         toast.add({severity: 'success', group: 'bl', summary: 'Success', detail: 'Board was successfully deleted', life: 3000});
         emit('cancel')

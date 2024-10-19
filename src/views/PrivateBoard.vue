@@ -25,7 +25,6 @@ const state  = reactive({
     displayEditBoardModal: false
 })
 const {privateBoard} = storeToRefs(privateBoardStore)
-console.log(privateBoard)
 
 onMounted(async () => {
     const res = await usePrivateBoardStore().fetchPrivateBoard(props.id)
@@ -57,8 +56,6 @@ const showDialogNewTaskClickHandler = () => {
 
 const saveNewTaskClickHandler = async () => {
     const newTaskUrl = url + routes.ROUTE_TASKS(props.id, state.newTaskColumnId)
-    console.log(newTaskUrl)
-    console.log(' POST NEW TASK ')
     const httpMethod = 'POST'
     const body = {
         title: state.newTaskTitle,
@@ -103,8 +100,6 @@ const screenSize = computed(() => {
     console.log('computed ',window.innerWidth)
     return window.innerWidth
 })
-console.log(screenSize.value)
-
 
 window.addEventListener("resize", (event) => {
     console.log('resize ',event)

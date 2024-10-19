@@ -49,7 +49,6 @@ export const useAuthStore = defineStore('auth', () => {
                         body: formData
                     })
 
-                    console.log('imageUrl in auth service', imageResponse)
                     const {imageUrl} = await imageResponse.json()
 
                     if (imageUrl) {
@@ -99,9 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
                     logout()
                     return
                 }
-                console.log(userData)
                 if (userData.id) {
-                    console.log('fetching user details')
                     userDetails.value = await getUserDetails(userData.id)
                 }
                 setUser(userData)
@@ -118,13 +115,11 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = userObj
     }
     const logout = () => {
-        console.log('logging out')
         authToken.value = ''
         user.value = {}
         localStorage.removeItem(localStorageKeys.LS_AUTH_TOKEN)
     }
     const getUserDetails = async (userId) => {
-        console.log('fetching user details in getUserDetails', userId)
         const response = await fetch(`${url}${routes.ROUTE_USERS}/${userId}/details`, {
             method: 'GET',
             headers: {
@@ -132,7 +127,6 @@ export const useAuthStore = defineStore('auth', () => {
             }
         })
         const userDetailsResponse = await response.json()
-        console.log('user details response', userDetailsResponse)
         return userDetailsResponse
     }
 
@@ -176,14 +170,12 @@ export const useAuthStore = defineStore('auth', () => {
                 },
                 body: JSON.stringify(updateObject)
             })
-            console.log(response)
             if (response.ok) {
                 const updatedUser = await response.json()
                 user.value = updatedUser
                 return Promise.resolve({success: true, user: updatedUser})
             }
             const res = await response.json()
-            console.log(res)
             return Promise.resolve({success: false, message:res})
         } catch (e) {
             return Promise.resolve({success: false, message: e.message})

@@ -10,12 +10,10 @@ export const useCountriesStore = defineStore('countries', () => {
         const countriesFromLocalStorage = localStorage.getItem(localStorageKeys.LS_COUNTRIES)
         if(countriesFromLocalStorage) {
             const {countries:c, ts} = JSON.parse(countriesFromLocalStorage)
-            console.log('countries from local storage', c)
             const now = Date.now()
             // if the countries were fetched less than 30 days ago, use them
             if(now - ts < 1000 * 60 * 60 * 24 * 30) {
                 countries.value = c
-                console.log('countries from local storage', countries.value)
                 return
             }
         }

@@ -38,7 +38,6 @@ const imgInputChangeHandler = async (e) => {
 const imageSrcObjectUrl = computedAsync(async () => {
     if (!imgSrc) return ''
     const blob = await imageService(imgSrc)
-    console.log('computed ', URL.createObjectURL(blob))
     return URL.createObjectURL(blob);
 })
 

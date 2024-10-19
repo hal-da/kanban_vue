@@ -7,7 +7,6 @@ const publicUserStore = usePublicUserStore()
 
 const {publicUsers, publicUsersName} = storeToRefs(publicUserStore)
 const emit = defineEmits(['change'])
-console.log(publicUsers.value)
 const {title, users} = defineProps({
     users: {
         type: Array,

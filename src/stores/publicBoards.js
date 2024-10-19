@@ -10,7 +10,6 @@ export const usePublicBoardsStore = defineStore('publicBoards', () => {
             const response = await fetch(apiBoardsUrl)
             publicBoards.value = await response.json()
         } catch (e) {
-            console.log(e)
             publicBoards.value = []
         }
     }

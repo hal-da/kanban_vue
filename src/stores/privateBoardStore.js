@@ -60,8 +60,6 @@ export const usePrivateBoardStore = defineStore('privateBoard', () => {
                 },
                 body: JSON.stringify(task)
             })
-
-            console.log(response)
             if(response.ok){
                 await refreshBoard()
             }

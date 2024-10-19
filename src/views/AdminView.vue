@@ -15,9 +15,7 @@ onMounted(async () => {
             'Authorization': 'Bearer ' + localStorage.getItem('kanbantastischAuthToken')
         }
     })
-    console.log(result)
     state.users = await result.json()
-    console.log(state.users)
 })
 
 </script>

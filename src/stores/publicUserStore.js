@@ -17,10 +17,8 @@ export const usePublicUserStore = defineStore('publicUser', () => {
     }
 
     onMounted(async () => {
-        console.log('fetching users on mount')
         const allUsers = await fetchPublicUsers()
         publicUsersName.value = allUsers.users?.map(user => user.username) || []
-        console.log(allUsers)
     })
 
 

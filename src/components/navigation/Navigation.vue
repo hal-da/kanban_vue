@@ -18,7 +18,6 @@ watch(route,(newRoute) => {
     }
 })
 
-console.log(authStore.user)
 
 </script>
 

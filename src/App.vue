@@ -1,13 +1,6 @@
 <script setup>
 import {RouterView} from 'vue-router'
 import Navigation from "@/components/navigation/Navigation.vue";
-import {onMounted} from "vue";
-
-
-
-onMounted(async () => {
-    console.log('mounted')
-})
 
 </script>
 

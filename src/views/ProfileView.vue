@@ -17,9 +17,7 @@ const saveChangedUserDetails = async () => {
         imageUrl: userDetails.imageUrl,
         cca3: userDetails.cca3
     }
-    console.log(updateObject)
     const res = await authStore.updateUser(updateObject)
-    console.log(res)
     if (res.success){
         unchangedUserDetails.userName = userDetails.userName
         unchangedUserDetails.email = userDetails.email
@@ -33,17 +31,14 @@ const saveChangedUserDetails = async () => {
 
 }
 const newImageEmitHandler = (newImage) => {
-    console.log('newImageEmitHandler', newImage)
     userDetails.imageUrl = newImage
 }
 
 const userChanged = computed(() => {
-    console.log('userChanged', JSON.stringify(userDetails) !== JSON.stringify(unchangedUserDetails), userDetails.cca3)
     return JSON.stringify(userDetails) !== JSON.stringify(unchangedUserDetails)
 })
 
 const userCountryChanged = (newCountry) => {
-    console.log('userCountryChanged', newCountry)
     userDetails.cca3 = newCountry.cca3
 }
 
@@ -52,7 +47,6 @@ const resetChangesClickHandler = () => {
     userDetails.cca3 = unchangedUserDetails.cca3
     userDetails.userName = unchangedUserDetails.userName
     userDetails.email = unchangedUserDetails.email
-    console.log('resetChangesClickHandler', userDetails.cca3)
 }
 
 // todo: add password change functionality, username, email, img

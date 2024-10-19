@@ -10,13 +10,10 @@ else  selectedCountry.value = countries.find(country => country.cca3 === userCca
 
 
 watch(() => userCca3, (newVal, oldValue) => {
-    console.log('watch in CountrySelect', newVal, ' old: ', oldValue )
     selectedCountry.value = countries.find(country => country.cca3 === newVal)
 })
 
 const onCountryChange = (event) => {
-    console.log(event)
-    console.log(selectedCountry.value)
     emitter('change', selectedCountry.value)
 }
 
