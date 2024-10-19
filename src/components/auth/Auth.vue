@@ -91,16 +91,10 @@ const pushToAdminView = () => {
         <Button v-if="authStore.user.role === 'ADMIN'" @click="pushToAdminView" text class="pr-0">Admin panel</Button>
         <Button v-if="!Object.values(privateBoard).length" text class="pr-0" @click="state.displayCreateBoardModal = true">create board</Button>
         <Button text disabled class="pr-0">hello, {{ authStore.user.userName }}</Button>
-        <Button text disabled class="pr-0">v0.1</Button>
+        <Button text disabled class="pr-0">v0.1.1</Button>
         <Button @click="logoutClickHandler" text>logout</Button>
-
-        <Dialog v-model:visible="state.displayCreateBoardModal"
-                modal
-                @close="cancelEditBoardClickHandler"
-                >
-            <template #container="{  }">
-                <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
-            </template>
+        <Dialog v-model:visible="state.displayCreateBoardModal" modal header="Create Board" :style="{ width: '50rem'}" :breakpoints="{ '1199px': '75vw', '575px': '100vw' }">
+            <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
         </Dialog>
     </div>
     <div v-else>
@@ -129,7 +123,7 @@ const pushToAdminView = () => {
             </div>
         </Dialog>
         <Dialog v-if="useAuthStore" v-model:visible="state.displayRegisterDialog" modal header="Register" :style="{ width: '50vw' }"
-                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                :breakpoints="{ '1199px': '75vw', '575px': '100vw' }">
             <RegisterForm/>
         </Dialog>
     </div>
@@ -139,6 +133,10 @@ const pushToAdminView = () => {
 .help {
     font-size: 12px;
     color: gray;
+}
+
+.p-dialog-header{
+    padding-bottom:0;
 }
 
 </style>
