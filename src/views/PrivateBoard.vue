@@ -119,8 +119,6 @@ window.addEventListener("resize", (event) => {
     </div>
     <Dialog v-model:visible="state.displayEditBoardModal"
             modal
-            :style="{ width: '50vw' }"
-            :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
             @close="cancelEditBoardClickHandler"
     >
         <template #container="{  }">

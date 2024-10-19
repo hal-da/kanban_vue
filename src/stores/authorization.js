@@ -49,6 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
                         body: formData
                     })
 
+                    console.log('imageUrl in auth service', imageResponse)
                     const {imageUrl} = await imageResponse.json()
 
                     if (imageUrl) {
@@ -83,7 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     onMounted(async () => {
-        const token = localStorage.getItem('kanbantastischAuthToken')
+        const token = localStorage.getItem(localStorageKeys.LS_AUTH_TOKEN)
         if (!!token) {
             const validateResponse = await fetch(`${url}${routes.ROUTE_TOKEN_VALIDATOR}`, {
                 method: 'GET',

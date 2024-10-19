@@ -1,6 +1,6 @@
 <script setup>
 
-import {computed, reactive, ref} from "vue";
+import { reactive } from "vue";
 import {useAuthStore} from "@/stores/authorization.js";
 import {usePublicBoardsStore} from "@/stores/publicBoards.js";
 import router from "@/router/index.js";
@@ -49,7 +49,10 @@ const loginClickHandler = async () => {
 }
 
 const logoutClickHandler = async () => {
-    toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye', detail: `Have a nice day!` , life: 3000 });
+    state.displayRegisterDialog = false
+    state.displayLoginDialog = false
+
+    toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye ' + authStore.user.userName + '!' , detail: `Have a nice day!` , life: 3000 });
     router.push({name: 'home'}).then(()=>{
         authStore.logout()
     })
@@ -91,9 +94,8 @@ const pushToAdminView = () => {
         <Button @click="logoutClickHandler" text>logout</Button>
         <Dialog v-model:visible="state.displayCreateBoardModal"
                 modal
-                :style="{ width: '50vw' }"
                 @close="cancelEditBoardClickHandler"
-                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                >
             <template #container="{  }">
                 <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
             </template>

@@ -1,13 +1,13 @@
 <script setup>
-import { useToast } from 'primevue/usetoast';
+import {useToast} from 'primevue/usetoast';
 import {useAuthStore} from "@/stores/authorization.js";
 import UserImage from "@/components/auth/UserImage.vue";
-import {computed, reactive} from "vue";
+import {computed, ref} from "vue";
 import CountrySelect from "@/components/auth/CountrySelect.vue";
 
 const authStore = useAuthStore()
 const userDetails = authStore.userDetails
-const unchangedUserDetails = {...authStore.userDetails}
+const unchangedUserDetails = ref({...authStore.userDetails})
 const toast = useToast();
 
 const saveChangedUserDetails = async () => {
@@ -19,10 +19,7 @@ const saveChangedUserDetails = async () => {
     }
     const res = await authStore.updateUser(updateObject)
     if (res.success){
-        unchangedUserDetails.userName = userDetails.userName
-        unchangedUserDetails.email = userDetails.email
-        unchangedUserDetails.imageUrl = userDetails.imageUrl
-        unchangedUserDetails.cca3 = userDetails.cca3
+        unchangedUserDetails.value = {...authStore.userDetails}
         toast.add({severity: 'success', group: 'bl', summary: 'Success', detail: 'User details saved!', life: 3000});
     } else {
         toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: res.message, life: 3000});

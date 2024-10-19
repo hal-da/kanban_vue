@@ -31,12 +31,11 @@ const registerClickHandler = async () => {
         state.errorMessage = res.error
         toast.add({ severity: 'error',group: 'bl', summary: 'Error', detail: state.errorMessage , life: 3000 });
     } else {
-
-        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'You have successfully registered!' , life: 3000 });
         state.userName = ''
         state.email = ''
         state.password = ''
         state.passwordConfirm = ''
+        toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'You have successfully registered!' , life: 3000 });
     }
     state.loading = false
 }

@@ -1,9 +1,10 @@
 <script setup>
-import {ref, watch} from "vue";
+import { ref, watch} from "vue";
 import Auth from "@/components/auth/Auth.vue";
 import {useRoute} from "vue-router";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {useAuthStore} from "@/stores/authorization.js";
+import UserImage from "@/components/auth/UserImage.vue";
 const privateBoardStore = usePrivateBoardStore()
 const authStore = useAuthStore()
 const route = useRoute();
@@ -24,6 +25,9 @@ watch(route,(newRoute) => {
 <template>
     <div class="card">
         <Menubar :model="items" class="py-0">
+            <template #start >
+                <UserImage :img-src="authStore.userDetails.imageUrl" :active="false" class="userImage"/>
+            </template>
             <template #item="{ item, props, hasSubmenu }">
                 <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
                     <a v-ripple :href="href" v-bind="props.action" @click="navigate">
