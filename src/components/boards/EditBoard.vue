@@ -235,7 +235,6 @@ const deleteBoard = async () => {
         method: 'DELETE',
         headers: {Authorization: `Bearer ${authStore.authToken}`}
     })
-    console.log(res)
     if (res.ok) {
         toast.add({severity: 'success', group: 'bl', summary: 'Success', detail: 'Board was successfully deleted', life: 3000});
         emit('cancel')
@@ -247,25 +246,23 @@ const deleteBoard = async () => {
         toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: errorMessage.error, life: 3000});
         state.loading = false
     }
-
 }
-
-
 </script>
 
 <template>
-    <div class="p-fluid dialogBackground">
+    <div class="dialogBackground">
+<!--    <div class="p-fluid dialogBackground sm:min-w-screen sm:top-0 max-w-screen sm:min-h-full ">-->
         <div class="flex flex-row justify-content-between align-items-center">
             <h3 class="mb-4">{{ title }}</h3>
             <div v-if="mode==='edit'"><Button :loading="state.loading" severity="danger" @click="confirmDeleteBoard">Delete Board</Button></div>
         </div>
-        <FloatLabel class="mt-3">
-            <InputText v-model="state.privateBoardCopy.title" id="boardTitle" autofocus minlength="1" maxlength="80"/>
+        <FloatLabel class="mt-3 ">
+            <InputText v-model="state.privateBoardCopy.title" id="boardTitle" autofocus minlength="1" maxlength="80" class="w-full"/>
             <label for="boardTitle" style="background-color: #262626; color: white">Board Title</label>
         </FloatLabel>
 
         <div class="help text-right">{{ state.privateBoardCopy.title.length }}/80</div>
-        <div class="flex justify-content-between gap-3">
+        <div class="flex justify-content-between gap-2">
             <UserList :title="'Admins'" @change="adminsChanged" :users="state.privateBoardCopy.admins"/>
             <UserList :title="'Members'" @change="membersChanged" :users="state.privateBoardCopy.members"/>
         </div>
@@ -305,14 +302,14 @@ const deleteBoard = async () => {
 
         </InputGroup>
 
-        <div class="flex-row flex-wrap align-items-center justify-content-end">
+        <div class="flex align-items-center gap-2">
             <Button @click="editBoardCLickHandler"
                     :disabled="!boardCopyWasChanged"
-                    class="mt-4 ml-auto px-3 text-center"
+                    class="mt-4 ml-auto px-3 text-center w-full"
                     icon="pi pi-check"
                     :loading="state.loading" label="save  "/>
             <Button @click="closeClickHandler"
-                    class="mt-4 ml-auto px-3 text-center"
+                    class="mt-4 ml-auto px-3 text-center w-full"
                     icon="pi pi-check"
                     :loading="state.loading" label="cancel"/>
         </div>

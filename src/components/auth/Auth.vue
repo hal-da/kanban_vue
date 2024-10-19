@@ -94,9 +94,8 @@ const pushToAdminView = () => {
         <Button @click="logoutClickHandler" text>logout</Button>
         <Dialog v-model:visible="state.displayCreateBoardModal"
                 modal
-                :style="{ width: '50vw' }"
                 @close="cancelEditBoardClickHandler"
-                :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                >
             <template #container="{  }">
                 <EditBoard :mode="'create'" @cancel="cancelCreateBoardClickHandler" @close="closeCreateBord" :title="'Create Board'"/>
             </template>
