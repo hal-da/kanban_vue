@@ -5,7 +5,7 @@ export const routes = {
     ROUTE_LOGIN:'login',
     ROUTE_REGISTER:'register',
     ROUTE_USERS:'users',
-    ROUTE_WHO_AM_I:'whoami', // todo: obsolete - replace with ROUTE_USERS
+    ROUTE_WHO_AM_I:'whoami',
     ROUTE_TOKEN_VALIDATOR:'tokenValidator',
     ROUTE_IMAGES:'images',
     ROUTE_TASKS:(boardId, columnId) => `boards/${boardId}/columns/${columnId}/tasks`,
