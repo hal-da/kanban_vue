@@ -27,14 +27,14 @@ const saveChangedUserDetails = async () => {
         cca3: userDetails.cca3
     }
     const res = await authStore.updateUser(updateObject)
+    userDetails.imageUrl = authStore.userDetails.imageUrl
+    userDetails.cca3 = authStore.userDetails.cca3
+    userDetails.userName = authStore.userDetails.userName
+    userDetails.email = authStore.userDetails.email
     if (res.success){
-        userDetails.imageUrl = authStore.userDetails.imageUrl
-        userDetails.cca3 = authStore.userDetails.cca3
-        userDetails.userName = authStore.userDetails.userName
-        userDetails.email = authStore.userDetails.email
         toast.add({severity: 'success', group: 'bl', summary: 'Success', detail: 'User details saved!', life: 3000});
     } else {
-        toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: res.message, life: 3000});
+        toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: res.message.error, life: 3000});
     }
 }
 
