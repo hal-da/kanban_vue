@@ -105,13 +105,32 @@ window.addEventListener("resize", (event) => {
     console.log('resize ',event)
 });
 
+const userIsAdmin = computed(() => {
+    console.log(privateBoard?.value.admins?.some(admin => admin.id === authStore.user.id))
+    return  privateBoard?.value.admins?.some(admin => admin.id === authStore.user.id)
+    // console.log(privateBoard.value.admins)
+    // console.log(authStore.user.id)
+    // let isAdmin = false
+    // privateBoard?.value.admins?.forEach(admin => {
+    //     // console.log(admin)
+    //     if(admin.id === authStore.user.id){
+    //         isAdmin = true
+    //     }
+    // })
+    // // if(privateBoard.value){
+    // //     isAdmin = privateBoard.value.admins.some(admin => admin.id === authStore.user.id)
+    // // }
+    // return isAdmin
+})
+
 </script>
 
 <template>
     <div class="flex justify-content-between">
         <Button text  @click="showDialogNewTaskClickHandler">New Task</Button>
         <h2 class="text-center">{{privateBoard.title}}</h2>
-        <Button text  @click="openEditBoardDialogClickHandler">Edit Board</Button>
+        <Button v-if="userIsAdmin"   text  @click="openEditBoardDialogClickHandler">Edit Board</Button>
+        <div v-else ></div>
     </div>
 
     <div class="boardBody flex p-1 gap-1">

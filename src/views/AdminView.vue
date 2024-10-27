@@ -6,6 +6,10 @@ import {imageService} from "@/components/utilities/services.js";
 import UserImage from "@/components/auth/UserImage.vue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
+import {usePublicBoardsStore} from "@/stores/publicBoards.js";
+import DataTableUser from "@/components/admin/DataTableUsers.vue";
+import DataTableBoards from "@/components/admin/DataTableBoards.vue";
+const {publicBoards} = usePublicBoardsStore()
 const confirm = useConfirm();
 const toast = useToast();
 
@@ -49,7 +53,7 @@ const fetchUsers = async ()=> {
     });
 }
 
-const transformDate = (date) => {
+const parseDate = (date) => {
     return new Date(date).toLocaleDateString('de-AT')
 }
 
@@ -76,30 +80,10 @@ const deleteUser = async (id) => {
 <template>
     <div>
         <h1>Admin Panel</h1>
-        <div class="card">
-            <ConfirmPopup></ConfirmPopup>
-
-            <DataTable :value="state.users " tableStyle="min-width: 50rem" size="small" stripedRows>
-                <Column header="image">
-                    <template #body="slotProps">
-                        <UserImage :img-src="slotProps.data.imageUrl" :active="false" />
-                    </template>
-                </Column>
-                <Column field="userName" header="Name" sortable ></Column>
-                <Column field="email" header="Email" sortable ></Column>
-                <Column field="createdAt" header="Member since" sortable >
-                    <template #body="slotProps">
-                        {{transformDate(slotProps.data.createdAt)}}
-                    </template>
-                </Column>
-                <Column header="Delete">
-                    <template #body="slotProps">
-                        <Button :disabled="slotProps.data.role === 'ADMIN'" text class="btn-sm" severity="danger"  icon="pi pi-trash" @click="confirmDelete($event, slotProps.data.id)"></Button>
-                    </template>
-                </Column>
-            </DataTable>
-        </div>
-        <pre>{{state.users}}</pre>
+        <ConfirmPopup></ConfirmPopup>
+        <DataTableUser :confirm-delete="confirmDelete" :parse-date="parseDate" :users="state.users" title="Users" />
+        <DataTableBoards :confirm-delete="confirmDelete" :boards="publicBoards"  :parse-date="parseDate"/>
+        <pre>{{publicBoards}}</pre>
     </div>
 </template>
 

@@ -65,6 +65,8 @@ const pushToProfile =  () => {
 <style scoped>
 
 .no-user-image {
+    margin-left:0;
+    padding-left:0;
     font-size: 8rem;
     color: #ccc;
 }
@@ -93,7 +95,7 @@ const pushToProfile =  () => {
     font-size: 1.5rem;
     color: #ccc;
     margin-top: 0.5rem;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
 }
 
 </style>
