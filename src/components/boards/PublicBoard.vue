@@ -37,6 +37,21 @@ const onBoardClickHandler = () => {
     }
 }
 
+const userPermissions = computed(() => {
+    let permissions = ''
+    props.board.members.forEach(member => {
+        if (member.id === userId.value) {
+            permissions = 'member'
+        }
+    })
+    props.board.admins.forEach(admin => {
+        if (admin.id === userId.value) {
+            permissions = 'admin'
+        }
+    })
+    return permissions
+})
+
 </script>
 
 <template>
@@ -45,9 +60,12 @@ const onBoardClickHandler = () => {
         <h2 class="m-0">{{ props.board.title }}</h2>
         <div>
 <!--            <div class="text-left"><a href="#">invite me</a> </div>-->
-        <div class="text-right">created by
+        <div class="flex justify-content-between">
+            <div><i :class="[userPermissions === 'admin' ? 'pi pi-user-plus':userPermissions === 'member' ? 'pi pi-user' : 'pi pi-user-minus']"></i></div>
+            <div>created by
             <a href="#" @hover.stop @click.stop title="Send private message">{{ props.board.createdBy.userName }}</a>
             @{{new Date(props.board.createdAt).toLocaleDateString("de-AT")}}
+        </div>
         </div>
         </div>
     </div>
@@ -74,6 +92,18 @@ const onBoardClickHandler = () => {
 
 .publicBoard:hover {
     transform: scale(1.01);
+}
+
+.pi-user-plus{
+    color:green;
+}
+
+.pi-user {
+    color:orange;
+}
+
+.pi-user-minus {
+    color:red;
 }
 
 </style>

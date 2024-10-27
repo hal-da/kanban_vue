@@ -34,30 +34,28 @@ const userHasNoMouse= computed(() => {
     return window.matchMedia("(any-hover: none)").matches
 })
 
-const applyFilter = () => {
-    console.log('applyFilter', sortChoiceSelected.value.value)
+const applyFilter = (sort=false) => {
     const filtered = publicBoards.value.filter(board => {
         return board.title.includes(filter.title) &&
             (filter.createdByMe ? board.createdBy.id === authStore.user.id : true) &&
             (filter.memberOf ? board.members.some(member => member.id === authStore.user.id) : true) &&
             (filter.adminOf ? board.admins.some(admin => admin.id === authStore.user.id) : true)
     })
-
-    let sorted = filtered.sort((a,b)=> Date.parse(a.createdAt) - Date.parse(b.createdAt))
-
-    sorted = sorted.sort((a, b) => {
-        if (sortChoiceSelected.value.value === 'title') {
-            return a.title.localeCompare(b.title)
-        } else if (sortChoiceSelected.value.value === 'createdBy') {
-            return b.createdBy.id.localeCompare(a.createdBy.id)
+    if(!!sort){
+        filtered.sort((a, b) => {
+            if (sortChoiceSelected.value.value === 'title') {
+                return a.title.localeCompare(b.title)
+            } else if (sortChoiceSelected.value.value === 'createdBy') {
+                return b.createdBy.id.localeCompare(a.createdBy.id)
+            }
+        })
+        if(sortChoiceSelectedBefore.value === sortChoiceSelected.value.value){
+            filtered.reverse()
         }
-    })
-    if(sortChoiceSelectedBefore.value === sortChoiceSelected.value.value){
-        filtered.reverse()
+        sortChoiceSelectedBefore.value = sortChoiceSelected.value.value === sortChoiceSelectedBefore.value ? '' : sortChoiceSelected.value.value
     }
 
-    publicBoardsCopy.value = sorted
-    sortChoiceSelectedBefore.value = sortChoiceSelected.value.value === sortChoiceSelectedBefore.value ? '' : sortChoiceSelected.value.value
+    publicBoardsCopy.value = filtered
 }
 
 onMounted(() => {
@@ -82,7 +80,7 @@ watch(publicBoards, () => {
                 <div class="flex-column p-0 ">
                     <div class="pt-2">
                         <Dropdown v-model="sortChoiceSelected" :options="sortChoices" optionLabel="label"
-                                   @change="applyFilter"
+                                   @change="applyFilter(true)"
                                   placeholder="Sort" class="w-full">
                             <template #option="slotProps">
                                 <div class="flex align-items-center">
@@ -100,15 +98,15 @@ watch(publicBoards, () => {
                         </FloatLabel>
                     </div>
                     <div class="pt-2">
-                        <Checkbox v-model="filter.createdByMe" @change="applyFilter" inputId="createdByMe" name="createdByMe" :binary="true"/>
+                        <Checkbox v-model="filter.createdByMe" @change="applyFilter(false)" inputId="createdByMe" name="createdByMe" :binary="true"/>
                         <label for="createdByMe" class="ml-2"> createdByMe </label>
                     </div>
                     <div  class="pt-2">
-                        <Checkbox v-model="filter.memberOf" @change="applyFilter" inputId="memberOf" name="memberOf" :binary="true" />
+                        <Checkbox v-model="filter.memberOf" @change="applyFilter(false)" inputId="memberOf" name="memberOf" :binary="true" />
                         <label for="memberOf" class="ml-2"> memberOf </label>
                     </div>
                     <div  class="pt-2">
-                        <Checkbox v-model="filter.adminOf" @change="applyFilter" inputId="adminOf" name="adminOf" :binary="true" />
+                        <Checkbox v-model="filter.adminOf" @change="applyFilter(false)" inputId="adminOf" name="adminOf" :binary="true" />
                         <label for="adminOf" class="ml-2"> adminOf </label>
                     </div>
                 </div>

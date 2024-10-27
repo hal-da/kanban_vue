@@ -5,7 +5,11 @@ import {useRoute} from "vue-router";
 import {usePrivateBoardStore} from "@/stores/privateBoardStore.js";
 import {useAuthStore} from "@/stores/authorization.js";
 import UserImage from "@/components/auth/UserImage.vue";
+import {usePublicBoardsStore} from "@/stores/publicBoards.js";
+import {usePublicUserStore} from "@/stores/publicUserStore.js";
 const privateBoardStore = usePrivateBoardStore()
+const publicBoardsStore = usePublicBoardsStore()
+const publicUserStore = usePublicUserStore()
 const authStore = useAuthStore()
 const route = useRoute();
 const items = ref([
@@ -13,8 +17,10 @@ const items = ref([
     {label: 'Profile', icon: 'pi pi-star', route: '/profile'}
 ])
 
-watch(route,(newRoute) => {
-    if(!newRoute.params.id){
+watch(route,async (newRoute) => {
+    await publicBoardsStore.fetchPublicBoards()
+    await publicUserStore.fetchPublicUsers()
+    if (!newRoute.params.id) {
         privateBoardStore.resetBoard()
     }
 })

@@ -9,9 +9,11 @@ import {storeToRefs} from "pinia";
 import EditBoard from "@/components/boards/EditBoard.vue";
 import RegisterForm from "@/components/auth/RegisterForm.vue";
 import { useToast } from 'primevue/usetoast';
+import {usePublicUserStore} from "@/stores/publicUserStore.js";
 
 const toast = useToast();
 const privateBoardStore = usePrivateBoardStore()
+const publicUserStore = usePublicUserStore()
 const {privateBoard} = storeToRefs(privateBoardStore)
 
 
@@ -51,6 +53,8 @@ const loginClickHandler = async () => {
 const logoutClickHandler = async () => {
     state.displayRegisterDialog = false
     state.displayLoginDialog = false
+    await publicBoardsStore.fetchPublicBoards()
+    await publicUserStore.fetchPublicUsers()
 
     toast.add({ severity: 'success',group: 'bl', summary: 'Goodbye ' + authStore.user.userName + '!' , detail: `Have a nice day!` , life: 3000 });
     router.push({name: 'home'}).then(()=>{
