@@ -9,10 +9,8 @@ const authStore = useAuthStore()
 const {userId} = storeToRefs(authStore)
 
 const props = defineProps(['board'])
-const {createdAt} = props.board
 let divTitle = ref('Login to access board')
 
-const date = new Date(createdAt).toLocaleDateString("de-AT")
 
 const userIsAllowed = computed(() => {
     let isAllowed = false
@@ -49,7 +47,7 @@ const onBoardClickHandler = () => {
 <!--            <div class="text-left"><a href="#">invite me</a> </div>-->
         <div class="text-right">created by
             <a href="#" @hover.stop @click.stop title="Send private message">{{ props.board.createdBy.userName }}</a>
-            @{{ date }}
+            @{{new Date(props.board.createdAt).toLocaleDateString("de-AT")}}
         </div>
         </div>
     </div>
