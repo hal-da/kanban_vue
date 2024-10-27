@@ -29,9 +29,11 @@ const saveTask = async () => {
     )
     if (res.ok) {
         toast.add({ severity: 'success',group: 'bl', summary: 'Success', detail: 'Task was successfully updated' , life: 3000 });
+        oldTask.value.description = props.task.description
     } else {
+        props.task.description = oldTask.value.description
         const error = await res.json()
-        toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: error, life: 3000});
+        toast.add({severity: 'error', group: 'bl', summary: 'Error', detail: error.error, life: 3000});
     }
 }
 

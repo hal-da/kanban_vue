@@ -9,7 +9,6 @@ const authStore = useAuthStore()
 const {userId} = storeToRefs(authStore)
 
 const props = defineProps(['board'])
-const {board} = ref(props)
 const {createdAt} = props.board
 let divTitle = ref('Login to access board')
 
@@ -17,7 +16,6 @@ const date = new Date(createdAt).toLocaleDateString("de-AT")
 
 const userIsAllowed = computed(() => {
     let isAllowed = false
-    console.log(props.board.title, props.board.members)
     props.board.members.forEach(member => {
         if (member.id === userId.value) {
             isAllowed = true
@@ -44,9 +42,9 @@ const onBoardClickHandler = () => {
 </script>
 
 <template>
-    <div @click="onBoardClickHandler" class="publicBoard p-3 m-2 "
+    <div @click="onBoardClickHandler" class="publicBoard p-3 md:m-2"
          :class="userIsAllowed ? 'cursorAllowed' : 'cursorNotAllowed'" :title="divTitle">
-        <h2>{{ props.board.title }}</h2>
+        <h2 class="m-0">{{ props.board.title }}</h2>
         <div>
 <!--            <div class="text-left"><a href="#">invite me</a> </div>-->
         <div class="text-right">created by

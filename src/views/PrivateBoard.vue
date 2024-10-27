@@ -96,31 +96,13 @@ const cancelEditBoardClickHandler = () => {
     privateBoardStore.refreshBoard()
 }
 
-const screenSize = computed(() => {
-    console.log('computed ',window.innerWidth)
-    return window.innerWidth
-})
 
 window.addEventListener("resize", (event) => {
     console.log('resize ',event)
 });
 
 const userIsAdmin = computed(() => {
-    console.log(privateBoard?.value.admins?.some(admin => admin.id === authStore.user.id))
     return  privateBoard?.value.admins?.some(admin => admin.id === authStore.user.id)
-    // console.log(privateBoard.value.admins)
-    // console.log(authStore.user.id)
-    // let isAdmin = false
-    // privateBoard?.value.admins?.forEach(admin => {
-    //     // console.log(admin)
-    //     if(admin.id === authStore.user.id){
-    //         isAdmin = true
-    //     }
-    // })
-    // // if(privateBoard.value){
-    // //     isAdmin = privateBoard.value.admins.some(admin => admin.id === authStore.user.id)
-    // // }
-    // return isAdmin
 })
 
 </script>
